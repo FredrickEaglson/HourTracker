@@ -12,11 +12,11 @@
                 <nav aria-label="Global" class="hidden md:block">
                     <ul class="flex items-center gap-6 text-sm">
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="./shifts"> Shifts </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/shifts"> Shifts </a>
                         </li>
 
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="#"> Payperiods </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/payperiods"> Payperiods </a>
                         </li>
 
                         <li>

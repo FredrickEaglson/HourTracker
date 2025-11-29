@@ -23,7 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['userid'] = $row['userid'];
             $_SESSION['email']=$row['email'];
             $_SESSION['loggedin'] = true;
-            $_Session['prefferedName'] = $row['prefferedName'];
+            $_SESSION['prefferedName'] = $row['prefferedName'];
+            $_SESSION['tempshifts'] = ["x"];
             header("Location: dashboard");
         }
     }

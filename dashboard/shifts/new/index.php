@@ -2,31 +2,7 @@
 session_start();
 $defaultrate = 0.0;
 
-include "../../..//auth/dbcon.php";
-$sql = $con->prepare("SELECT `defaultrate` FROM `accounts` WHERE `userid`=?");
-$sql->bind_param("s", $_SESSION['userid']);
-$sql->execute();
-$result = $sql->get_result();
-$row = $result->fetch_assoc();
-$defaultrate = $row['defaultrate'];
 
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['name'] ?? null;
-    $startdate = $_POST['startdate'];
-    $enddate = $_POST['enddate'];
-    $payrate = $_POST['payrate'] ?? $defaultrate;
-    $userid = $_POST['userid'] ?? $_SESSION['userid'];
-    $shifts = join(',', $_POST['shifts']) ?? null;
-
-    $sql = $con->prepare("INSERT INTO `payperiods` (`name`, `startdate`, `enddate`, `rate`, `userid`,`shift_ids`) VALUES (?, ?, ?, ?, ?,?)");
-    $sql->bind_param("sssdss", $name, $startdate, $enddate, $payrate, $userid, $shifts);
-    $result = $sql->execute();
-    if ($result) {
-        header("Location: ../");
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -43,37 +19,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <main>
         <section class="place-content-center">
             <div class="flex flex-col justify-center items-center p-3 m-4 border-solid rounded-4xl  border-4 border-black shadow-2xl">
-                <h2 class="text-center text-2xl mb-5">New Pay Period</h2>
+                <h2 class="text-center text-2xl mb-5">New Shift</h2>
                 <div class="flex flex-col justify-center items-center w-full">
                     <form class="w-full max-w-md" method="post">
 
                         <div class="grid grid-cols-3 grid-rows-2 gap-4">
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="name">Name</label>
-                                <input type="text" class="max-w-full border border-black" name="name">
+                                <label for="startdate">Date</label>
+                                <input type="date" class="max-w-full" name="date" required>
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="startdate">Start Date</label>
-                                <input type="date" class="max-w-full" name="startdate" required>
-                            </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="enddate">End Date</label>
-                                <input type="date" class="max-w-full" name="enddate" required>
-                            </div>
+
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="payrate">Pay Rate</label>
-                                <input type="number" class="max-w-full border border-black border-solid" step="0.01" name="payrate" value="<?php echo $defaultrate ?>">
+                                <input type="number" class="max-w-full border border-black border-solid pl-1" step="0.01" name="payrate" value="<?php echo $defaultrate ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="userid">User ID</label>
                                 <input type="text" class="max-w-full" name="userid" readonly value="<?php echo $_SESSION['userid']; ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="periodID">Pay Period ID</label>
-                                <input type="text" class="max-w-full" name="payperiodID" readonly value="N/A">
+                                <label for="userid">Hours</label>
+                                <input type="number" class="max-w-full border border-black border-solid pl-1" name="hours" required>
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border1">
-                                <button type="submit" class="w-full">Insert</button>
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                <label for="userid">Minutes</label>
+                                <input type="number" class="max-w-full border border-black border-solid pl-1" name="minutes" required>
+                            </div>
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                <label for="periodID">Shift ID</label>
+                                <input type="text" class="max-w-full" name="shiftid" readonly value="N/A">
+                            </div>
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                <label for="periodID"></label>
+                                <input type="text" class="max-w-full" name="shiftid" readonly value="N/A">
+                            </div>
+                            <div class="p-2 bg-slate-200 rounded border1 justify-center items-center align-center align-items-center">
+                                <button type="submit" class="w-full h-full">Insert</button>
                             </div>
                         </div>
 

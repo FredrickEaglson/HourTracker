@@ -2,31 +2,17 @@
 session_start();
 $defaultrate = 0.0;
 
-include "../../..//auth/dbcon.php";
-$sql = $con->prepare("SELECT `defaultrate` FROM `accounts` WHERE `userid`=?");
-$sql->bind_param("s", $_SESSION['userid']);
+include "../..//auth/dbcon.php";
+
+$id = $_GET['id'];
+
+$sql = $con->prepare("SELECT * FROM `payperiods` WHERE `ppid`=? && `userid`=?");
+$sql->bind_param("ss", $id, $_SESSION['userid']);
 $sql->execute();
 $result = $sql->get_result();
 $row = $result->fetch_assoc();
-$defaultrate = $row['defaultrate'];
 
 
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['name'] ?? null;
-    $startdate = $_POST['startdate'];
-    $enddate = $_POST['enddate'];
-    $payrate = $_POST['payrate'] ?? $defaultrate;
-    $userid = $_POST['userid'] ?? $_SESSION['userid'];
-    $shifts = join(',', $_POST['shifts']) ?? null;
-
-    $sql = $con->prepare("INSERT INTO `payperiods` (`name`, `startdate`, `enddate`, `rate`, `userid`,`shift_ids`) VALUES (?, ?, ?, ?, ?,?)");
-    $sql->bind_param("sssdss", $name, $startdate, $enddate, $payrate, $userid, $shifts);
-    $result = $sql->execute();
-    if ($result) {
-        header("Location: ../");
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/head.php"; ?>
 
-    <link rel="stylesheet" href="../../../app/styles/global.css">
+    
 </head>
 
 <body class="w-screen">
@@ -50,27 +36,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="grid grid-cols-3 grid-rows-2 gap-4">
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="name">Name</label>
-                                <input type="text" class="max-w-full border border-black" name="name">
+                                <input type="text" class="max-w-full border border-black" name="name" value="<?php echo $row['name']; ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid" >
                                 <label for="startdate">Start Date</label>
-                                <input type="date" class="max-w-full" name="startdate" required>
+                                <input type="date" class="max-w-full" name="startdate" required value="<?php echo date("Y-m-d", strtotime($row['startdate'])); ?>" >
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="enddate">End Date</label>
-                                <input type="date" class="max-w-full" name="enddate" required>
+                                <input type="date" class="max-w-full" name="enddate" required value="<?php echo date("Y-m-d", strtotime($row['enddate'])); ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="payrate">Pay Rate</label>
-                                <input type="number" class="max-w-full border border-black border-solid" step="0.01" name="payrate" value="<?php echo $defaultrate ?>">
+                                <input type="number" class="max-w-full border border-black border-solid" step="0.01" name="payrate" value="<?php echo $row['rate']; ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="userid">User ID</label>
-                                <input type="text" class="max-w-full" name="userid" readonly value="<?php echo $_SESSION['userid']; ?>">
+                                <input type="text" class="max-w-full" name="userid" readonly value="<?php echo $row['userid']; ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Pay Period ID</label>
-                                <input type="text" class="max-w-full" name="payperiodID" readonly value="N/A">
+                                <input type="text" class="max-w-full" name="payperiodID" readonly value="<?php echo $row['ppid']; ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border1">
                                 <button type="submit" class="w-full">Insert</button>

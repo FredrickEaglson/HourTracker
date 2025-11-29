@@ -1,11 +1,7 @@
 <?php 
-use App\Components;
-include "../app/Components.php";
-
-$components->register("footer",$_SERVER['PHP_SELF']);
 ?>
 
-<footer class="bg-white">
+<footer class="bg-white ">
   <div class="mx-auto max-w-7xl space-y-8 px-4 py-16 sm:px-6 lg:space-y-16 lg:px-8">
     <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
       <div>

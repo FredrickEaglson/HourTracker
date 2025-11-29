@@ -53,12 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $sql->execute();
                 $result = $sql->get_result();
                 if ($result->num_rows == 0) {
-                    echo false;
+                    echo "false";
                 } else {
                     $temp = $_SESSION['tempshifts'];
                     $temp .= $result->fetch_assoc()['uuid'];
                     $_SESSION['tempshifts'] = $temp;
-                    echo true;
+                    echo "true";
                 }
             }
     }
