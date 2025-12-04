@@ -1,8 +1,8 @@
 <?php
 session_start();
-$defaultrate = 0.0;
+$defaultrate = $_SESSION['defaultrate'];
 
-
+$formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +26,7 @@ $defaultrate = 0.0;
                         <div class="grid grid-cols-3 grid-rows-2 gap-4">
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="startdate">Date</label>
-                                <input type="date" class="max-w-full" name="date" required>
+                                <input type="date" class="max-w-full" name="date" value="<?php echo date("Y-m-d", time()); ?>" required>
                             </div>
 
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
@@ -49,9 +49,48 @@ $defaultrate = 0.0;
                                 <label for="periodID">Shift ID</label>
                                 <input type="text" class="max-w-full" name="shiftid" readonly value="N/A">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="periodID"></label>
-                                <input type="text" class="max-w-full" name="shiftid" readonly value="N/A">
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid col-span-2">
+                                <label for="periodID">Pay Period</label>
+                                <?php
+                                include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
+                                $sql = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=?");
+                                $sql->bind_param("s", $_SESSION['userid']);
+                                $sql->execute();
+                                $result = $sql->get_result();
+                                if ($result->num_rows == 0 && sizeof($_SESSION['tempshifts']) == 1) {
+                                    echo "<h2 class='text-center'>You have no payperiods</h2>";
+                                    echo "<input type='hidden' name='' value=''>";
+                                } else {
+                                    echo "<select name='periodID'>";
+                                    echo "<option value=''>Payperiod or leave blank</option>";
+                                    foreach ($result as $row) {
+                                        echo "<option value='" . $row['ppid'] . "'>";
+                                        echo '<div
+                            
+                            class="flex flex-col justify-center items-center p-3 m-4 border border-black text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
+                            
+                            <span class="flex flex-col w-full justify-between ">
+                                <h3
+                                    class="flex flex-row mr-6 text-lg payperiodname"
+                                    aria-label="pay period name">
+                                    ' . date('M D, Y', strtotime($row['startdate'])) . ' - ' . date('M D, Y', strtotime($row['enddate']));
+                                        echo '
+                                </h3>
+                                <br>
+                                <span class="flex flex-row align-bottom text-lg">
+                                    
+                                    <span class="flex flex-row text-red-700 text-lg ">' . $formatter->formatCurrency($row['rate'], "USD");
+                                        echo '</span>  ';
+                                        echo '
+                                </span>
+                            </span>
+                            
+                        </div>';
+                                        echo "</option>";
+                                    }
+                                }
+                                echo "</select>"
+                                ?>
                             </div>
                             <div class="p-2 bg-slate-200 rounded border1 justify-center items-center align-center align-items-center">
                                 <button type="submit" class="w-full h-full">Insert</button>
@@ -59,36 +98,6 @@ $defaultrate = 0.0;
                         </div>
 
                         <div class="flex flex-col justify-center items-center p-3 m-4">
-                            <form method="POST">
-                                <table class="border1 border-collapse gap-2">
-                                    <tr class="border1 border-collapse">
-                                        <th>Shift</th>
-                                        <th>Date</th>
-                                        <th>Hours</th>
-                                        <th>Minutes</th>
-                                        <th>Rate</th>
-                                    </tr>
-
-
-                                    <tbody id="tbodshifts">
-                                        <?php
-
-                                        include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-                                        $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid`=NULL");
-                                        $sql->bind_param("s", $_SESSION['userid']);
-                                        $sql->execute();
-                                        $result = $sql->get_result();
-
-                                        if ($result->num_rows == 0 && sizeof($_SESSION['tempshifts']) == 1) {
-                                            echo "<h2 class='text-center'>You have no shifts</h2>";
-                                            echo "<input type='hidden' name='shifts[]' value=''>";
-                                        }
-
-                                        ?>
-                                    </tbody>
-
-                                </table>
-
                         </div>
                     </form>
                 </div>

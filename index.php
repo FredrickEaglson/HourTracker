@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['loggedin'] = true;
             $_SESSION['prefferedName'] = $row['prefferedName'];
             $_SESSION['tempshifts'] = ["x"];
+            $_SESSION['defaultrate']=$row['defaultrate'];
             header("Location: dashboard");
         }
     }
