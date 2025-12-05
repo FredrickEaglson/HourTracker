@@ -11,7 +11,7 @@ $sql->bind_param("ss", $id, $_SESSION['userid']);
 $sql->execute();
 $result = $sql->get_result();
 $row = $result->fetch_assoc();
-
+$formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
 
 ?>
 
@@ -21,7 +21,7 @@ $row = $result->fetch_assoc();
 <head>
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/head.php"; ?>
 
-    
+
 </head>
 
 <body class="w-screen">
@@ -29,7 +29,7 @@ $row = $result->fetch_assoc();
     <main>
         <section class="place-content-center">
             <div class="flex flex-col justify-center items-center p-3 m-4 border-solid rounded-4xl  border-4 border-black shadow-2xl">
-                <h2 class="text-center text-2xl mb-5">New Pay Period</h2>
+                <h2 class="text-center text-2xl mb-5">Edit Pay Period</h2>
                 <div class="flex flex-col justify-center items-center w-full">
                     <form class="w-full max-w-md" method="post">
 
@@ -38,9 +38,9 @@ $row = $result->fetch_assoc();
                                 <label for="name">Name</label>
                                 <input type="text" class="max-w-full border border-black" name="name" value="<?php echo $row['name']; ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid" >
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="startdate">Start Date</label>
-                                <input type="date" class="max-w-full" name="startdate" required value="<?php echo date("Y-m-d", strtotime($row['startdate'])); ?>" >
+                                <input type="date" class="max-w-full" name="startdate" required value="<?php echo date("Y-m-d", strtotime($row['startdate'])); ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="enddate">End Date</label>
@@ -58,44 +58,99 @@ $row = $result->fetch_assoc();
                                 <label for="periodID">Pay Period ID</label>
                                 <input type="text" class="max-w-full" name="payperiodID" readonly value="<?php echo $row['ppid']; ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border1">
-                                <button type="submit" class="w-full">Insert</button>
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                <label for="shifts">Shifts</label>
+                                <input type="text" class="max-w-full" name="shifts" readonly value="<?php echo $row['shifts']; ?>">
+                            </div>
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                <label for="periodID">Total Time</label>
+                                <input type="text" class="max-w-full" name="hours" readonly value="<?php echo (floor($row['hours']) .':' . floor(($row['hours'] - floor($row['hours'])) / 60)) ?? '0:00' ?>">
+                            </div>
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                <label for="periodID">Before Tax</label>
+                                <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['rate']*$row['hours']), "USD"); ?>">
+                            </div>
+                            <div class="p-2 bg-slate-200 rounded border1 h-full">
+                                <button type="submit" class="w-full h-full">Insert</button>
                             </div>
                         </div>
-
-                        <div class="flex flex-col justify-center items-center p-3 m-4">
-                            <form method="POST">
-                                <table class="border1 border-collapse gap-2">
-                                    <tr class="border1 border-collapse">
-                                        <th>Shift</th>
-                                        <th>Date</th>
-                                        <th>Hours</th>
-                                        <th>Minutes</th>
-                                        <th>Rate</th>
-                                    </tr>
-
-
-                                    <tbody id="tbodshifts">
-                                        <?php
-
-                                        include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-                                        $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid`=NULL");
-                                        $sql->bind_param("s", $_SESSION['userid']);
-                                        $sql->execute();
-                                        $result = $sql->get_result();
-
-                                        if ($result->num_rows == 0 && sizeof($_SESSION['tempshifts']) == 1) {
-                                            echo "<h2 class='text-center'>You have no shifts</h2>";
-                                            echo "<input type='hidden' name='shifts[]' value=''>";
-                                        }
-
-                                        ?>
-                                    </tbody>
-
-                                </table>
-
-                        </div>
                     </form>
+                    <div class="flex flex-col justify-center items-center p-3 m-4">
+                        <div class="mb-5">
+                            <ul>
+                                <?php
+                                $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid`=?");
+                                $sql->bind_param("ss", $_SESSION['userid'], $row['ppid']);
+                                $sql->execute();
+                                $result2 = $sql->get_result();
+                                if ($result2->num_rows > 0) {
+                                    foreach ($result2 as $row2) {
+                                        echo '
+                    <a href="#">
+                        <div
+                            
+                            class="flex flex-col justify-center items-center p-3 m-4 border border-black text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
+                            
+                            <span class="flex flex-row w-full justify-between ">
+                                <h3
+                                    class="flex flex-row mr-6 text-lg payperiodname"
+                                    aria-label="pay period name">
+                                    ' . date('D, M d, Y', strtotime($row2['date']));
+                                        echo '
+                                </h3>
+                                <span class="flex flex-row align-bottom text-lg">
+                                    <span class="flex flex-row mr-2 text-lg ">' . floor($row2['hours']) . ':' . floor(($row2['hours'] - floor($row2['hours'])) / 60);
+                                        echo '</span>
+                                    <span class="flex flex-row text-red-700 text-lg ">' . $formatter->formatCurrency($row2['rate'], "USD");
+                                        echo '</span>  
+                            <span class="flex flex-row ml-2 text-lg ">' . $formatter->formatCurrency($row2['rate'] * $row2['hours'], "USD");
+                                        echo '</span> 
+                                </span>
+                            </span>
+                            <span>
+                            <a class="text-red-500 underline" href="./deallocate.php?id=' . $row2['uuid'] . '">Deallocate
+                            </a>
+                            </span>
+                            
+                        </div>
+                    </li></a>';
+                                    }
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                        <form method="POST">
+                            <table class="border1 border-collapse gap-2">
+                                <tr class="border1 border-collapse">
+                                    <th>Shift</th>
+                                    <th>Date</th>
+                                    <th>Hours</th>
+                                    <th>Minutes</th>
+                                    <th>Rate</th>
+                                </tr>
+
+
+                                <tbody id="tbodshifts">
+                                    <?php
+
+                                    include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
+                                    $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid`=NULL");
+                                    $sql->bind_param("s", $_SESSION['userid']);
+                                    $sql->execute();
+                                    $result = $sql->get_result();
+
+                                    if ($result->num_rows == 0 && sizeof($_SESSION['tempshifts']) == 1) {
+                                        echo "<h2 class='text-center'>You have no unallocated shifts</h2>";
+                                        echo "<input type='hidden' name='shifts[]' value=''>";
+                                    }
+
+                                    ?>
+                                </tbody>
+
+                            </table>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </section>

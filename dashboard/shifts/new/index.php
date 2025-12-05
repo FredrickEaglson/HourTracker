@@ -3,6 +3,43 @@ session_start();
 $defaultrate = $_SESSION['defaultrate'];
 
 $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $date = $_POST['date'];
+    $rate = $_POST['payrate'];
+    $userid = $_POST['userid'];
+    $hours = $_POST['hours'] + $_POST['minutes'] / 60;
+    $ppid = $_POST['periodID'] ?? '';
+
+    include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
+    $sql = $con->prepare("INSERT INTO `shifts` (`date`, `rate`, `userid`, `hours`, `ppid`) VALUES (?, ?, ?, ?, ?)");
+    $sql->bind_param("sssss", $date, $rate, $userid, $hours, $ppid);
+    $sql->execute();
+    header("Location: ../");
+
+    if ($_POST['periodID']!=''){
+        $sql = $con->prepare("SELECT * FROM `shifts` WHERE `ppid`=?");
+        $sql->bind_param("s", $_POST['periodID']);
+        $sql->execute();
+        $result = $sql->get_result();
+        if ($result->num_rows == 0) {
+            
+        }
+        else {
+            $pphours = $hours + $row['hours'];
+            $ppshiftids = $shifts . ',' . $row['shift_ids'];
+            $ppshifts = $row['shifts']+1;
+
+            $sql = $con->prepare("UPDATE `payperiods` SET `hours`=?, `shifts`=?,shift_ids=? WHERE `ppid`=?");
+            $sql->bind_param("sss", $pphours, $ppshifts,$ppshiftids, $_POST['periodID']);
+            $sql->execute();
+        }
+    }
+}
+
+
+
+
 ?>
 
 <!DOCTYPE html>
