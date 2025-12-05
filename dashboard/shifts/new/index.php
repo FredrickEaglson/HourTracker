@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header("Location: ../");
 
     if ($_POST['periodID']!=''){
-        $sql = $con->prepare("SELECT * FROM `shifts` WHERE `ppid`=?");
+        $sql = $con->prepare("SELECT * FROM `payperiods` WHERE `ppid`=?");
         $sql->bind_param("s", $_POST['periodID']);
         $sql->execute();
         $result = $sql->get_result();
@@ -26,12 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
         }
         else {
-            $pphours = $hours + $row['hours'];
-            $ppshiftids = $shifts . ',' . $row['shift_ids'];
-            $ppshifts = $row['shifts']+1;
+            $row3 = $result->fetch_assoc()[0];
+            $pphours = $hours + $row3['hours'];
+            $ppshiftids = $shifts . ',' . $row3['shift_ids'];
+            $ppshifts = $row3['shifts']+1;
 
             $sql = $con->prepare("UPDATE `payperiods` SET `hours`=?, `shifts`=?,shift_ids=? WHERE `ppid`=?");
-            $sql->bind_param("sss", $pphours, $ppshifts,$ppshiftids, $_POST['periodID']);
+            $sql->bind_param("ssss", $pphours, $ppshifts,$ppshiftids, $_POST['periodID']);
             $sql->execute();
         }
     }

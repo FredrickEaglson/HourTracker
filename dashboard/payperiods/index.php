@@ -16,10 +16,10 @@ $result = $sql->get_result();
 </head>
 
 <body>
-    
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; 
-    
-    
+
+    <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php";
+
+
     ?>
     <main class="flex flex-col justify-center items-center m-auto p-auto mb-16 pb-4">
         <section class="flex flex-col justify-center items-center m-4 p-4"></section>
@@ -39,7 +39,7 @@ $result = $sql->get_result();
             } else {
 
                 foreach ($result as $row) {
-                    echo "<tr class='border1 border-collapse'>";
+                    echo "<tr class='border-collapse'>";
 
                     echo "<td>" . $row['name'] . "</td>";
                     echo "<td>" . date('M d, Y', strtotime($row['startdate'])) . "</td>";
