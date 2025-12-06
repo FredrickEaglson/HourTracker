@@ -25,14 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sql->bind_param("sssdss", $row['name'], $row['startdate'], $row['enddate'], $row['rate'], $shiftids, $row['ppid']);
     $sql->execute();
     $result = $sql->get_result();
-
+    echo $sql->error;
+    echo $sql->affected_rows;
     if ($sql->affected_rows > 0) {
-        header("Location: ../payperiods/update.php?id=" . $row['ppid'].'&r='.$_SERVER['REQUEST_URI'].'&e=1');
+        header("Location: ../payperiods/update.php?id=" . $row['ppid'] . '&r=' . $_SERVER['REQUEST_URI'] . '&e=1');
     } else {
         echo "Error";
         echo $sql->error;
     }
-    
 }
 
 function formatmins($mins)
@@ -124,6 +124,7 @@ function formatmins($mins)
 
                                             echo '
                     <a href="#">
+                    <li>
                         <div
                             
                             class="flex flex-col justify-center items-center p-3 m-4 border border-black text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
@@ -156,52 +157,62 @@ function formatmins($mins)
                                     ?>
                                 </ul>
                             </div>
-                            <form method="POST">
-                                <table class="border1 border-collapse gap-2">
-                                    <tr class="border1 border-collapse">
-
-                                        <th>Date</th>
-                                        <th>Hours</th>
-                                        <th>Minutes</th>
-                                        <th>Rate</th>
-                                    </tr>
 
 
-                                    <tbody id="tbodshifts">
-                                        <?php
+                            <?php
 
-                                        include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-                                        $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid` IS null");
-                                        $sql->bind_param("s", $_SESSION['userid']);
-                                        $sql->execute();
-                                        $result = $sql->get_result();
-
-                                        if ($result->num_rows == 0 && sizeof($_SESSION['tempshifts']) == 1) {
-                                            echo "<h2 class='text-center'>You have no unallocated shifts</h2>";
-                                            echo "<input type='hidden' name='shifts[]' value=''>";
-                                        } else {
-                                            foreach ($result as $row) {
-                                                echo '<tr>
-                                                    <td>' . $row['date'] . '</td>
-                                                    <td>' . floor($row['hours']) . '</td>
-                                                    <td>' . formatmins($row['hours'] - floor($row['hours'])) . '</td>
-                                                    <td>' . $row['rate'] . '</td>
-                                                    <td><input type="checkbox" name="shifts[]" value="' . $row['uuid'] . '"></td>
-                                                </tr>';
-                                            }
-                                        }
-
-                                        ?>
-                                    </tbody>
-
-                                </table>
-                                <div class="p-2 bg-slate-200 rounded border1 mt-2 h-full">
-                                    <button type="submit" class="w-full h-full">Add Shifts</button>
-                                </div>
-                            </form>
+                            include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
+                            $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid` IS null OR `ppid`=''");
+                            $sql->bind_param("s", $_SESSION['userid']);
+                            $sql->execute();
+                            $result = $sql->get_result();
+                                    echo $result->num_rows;
+                            if ($result->num_rows == 0 && sizeof($_SESSION['tempshifts']) == 1) {
+                                echo "<h2 class='text-center'>You have no unallocated shifts</h2>";
+                                echo "<input type='hidden' name='shifts[]' value=''>";
+                            } else {
+                                echo '<ul>';
+                                foreach ($result as $row) {
+                                    echo '<a href="./allocate.php?id=' . $row['uuid'] . '&r=' . $_SERVER['REQUEST_URI'] . '">
+                                                    <li>
+                        <div class="flex flex-col justify-center items-center p-3 m-4 border border-red-700 text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
+                            
+                            <span class="flex flex-row w-full justify-between ">
+                                <span>
+                                
+                                <h3
+                                    class="flex flex-row mr-6 text-lg payperiodname"
+                                    aria-label="pay period name">
+                                    ' . date('D, M d, Y', strtotime($row['date']));
+                                    echo '
+                                </h3>
+                                </span>
+                                <span class="flex flex-row align-bottom text-lg">
+                                    <span class="flex flex-row mr-2 text-lg ">' . floor($row['hours']) . ':' . formatmins(floor(($row['hours'] - floor($row['hours'])) * 60));
+                                    echo '</span>
+                                    <span class="flex flex-row text-red-700 text-lg ">' . $formatter->formatCurrency($row['rate'], "USD");
+                                    echo '</span>  
+                            <span class="flex flex-row ml-2 text-lg ">' . $formatter->formatCurrency($row['rate'] * $row['hours'], "USD");
+                                    echo '</span> 
+                                </span>
+                            </span>
+                            
                         </div>
+                    </li></a>';
+                                }
+                                echo '</ul>';
+                            }
 
+                            ?>
+
+
+                            <div class="p-2 bg-slate-200 rounded border1 mt-2 h-full">
+                                <a href='/dashboard/shifts/new' class="w-full h-full">Add Shifts</a>
+                            </div>
+                    </form>
                 </div>
+
+            </div>
             </div>
         </section>
     </main>
