@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 $pass = "eYY)]ajDe274n_qJ";
 $user = "hourtracker";

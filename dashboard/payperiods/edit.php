@@ -3,6 +3,7 @@ session_start();
 $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
+$ppid='';
 include "../..//auth/dbcon.php";
 
 $id = $_GET['id'];
@@ -12,6 +13,7 @@ $sql->bind_param("ss", $id, $_SESSION['userid']);
 $sql->execute();
 $result = $sql->get_result();
 $row = $result->fetch_assoc();
+$ppid=$row['ppid'];
 $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
 
 if ($row['userid'] != $_SESSION['userid']) {
@@ -146,7 +148,7 @@ function formatmins($mins)
                                 </span>
                             </span>
                             <span>
-                            <a class="text-red-500 underline" href="./deallocate.php?id=' . $row2['uuid'] . '&r=' . $_SERVER['REQUEST_URI'] . '">Deallocate
+                            <a class="text-red-500 underline" href="./deallocate.php?id=' . $row2['uuid'].'&ppid=' . $ppid . '&r=' . $_SERVER['REQUEST_URI'] . '?Deallocate">Deallocate</a>
                             </a>
                             </span>
                             
@@ -173,7 +175,7 @@ function formatmins($mins)
                             } else {
                                 echo '<ul>';
                                 foreach ($result as $row) {
-                                    echo '<a href="./allocate.php?id=' . $row['uuid'] . '&r=' . $_SERVER['REQUEST_URI'] . '">
+                                    echo '<a href="./allocate.php?id=' . $row['uuid'] . '&r=' . $_SERVER['REQUEST_URI'] . '&ppid='.$ppid.'">
                                                     <li>
                         <div class="flex flex-col justify-center items-center p-3 m-4 border border-red-700 text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
                             
