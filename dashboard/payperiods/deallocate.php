@@ -29,7 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $sql = $con->prepare("UPDATE `shifts` SET `ppid` = NULL WHERE `uuid` = ? AND ppid=?");
         $sql->bind_param("ss", $id, $row['ppid']);
         $sql->execute();
-        header("Location: ".$_GET['r']);
+
+        header("Location: " . $_GET['r']);
         
     }
 }

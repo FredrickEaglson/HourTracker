@@ -3,7 +3,7 @@ session_start();
 $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
-$ppid='';
+$ppid = '';
 include "../..//auth/dbcon.php";
 
 $id = $_GET['id'];
@@ -13,7 +13,7 @@ $sql->bind_param("ss", $id, $_SESSION['userid']);
 $sql->execute();
 $result = $sql->get_result();
 $row = $result->fetch_assoc();
-$ppid=$row['ppid'];
+$ppid = $row['ppid'];
 $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
 
 if ($row['userid'] != $_SESSION['userid']) {
@@ -103,7 +103,7 @@ function formatmins($mins)
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Before Tax</label>
-                                <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['rate'] * $row['hours']), "USD"); ?>">
+                                <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row), "USD"); ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border1 h-full">
                                 <button type="submit" class="w-full h-full">Update</button>
@@ -148,7 +148,7 @@ function formatmins($mins)
                                 </span>
                             </span>
                             <span>
-                            <a class="text-red-500 underline" href="./deallocate.php?id=' . $row2['uuid'].'&ppid=' . $ppid . '&r=' . $_SERVER['REQUEST_URI'] . '?Deallocate">Deallocate</a>
+                            <a class="text-red-500 underline" href="./deallocate.php?id=' . $row2['uuid'] . '&ppid=' . $ppid . '&r=/dashboard/payperiods/edit.php?id=' . $ppid . '?Deallocate">Deallocate</a>
                             </a>
                             </span>
                             
@@ -168,14 +168,14 @@ function formatmins($mins)
                             $sql->bind_param("s", $_SESSION['userid']);
                             $sql->execute();
                             $result = $sql->get_result();
-                                    echo $result->num_rows;
+                            echo $result->num_rows;
                             if ($result->num_rows == 0 && sizeof($_SESSION['tempshifts']) == 1) {
                                 echo "<h2 class='text-center'>You have no unallocated shifts</h2>";
                                 echo "<input type='hidden' name='shifts[]' value=''>";
                             } else {
                                 echo '<ul>';
                                 foreach ($result as $row) {
-                                    echo '<a href="./allocate.php?id=' . $row['uuid'] . '&r=' . $_SERVER['REQUEST_URI'] . '&ppid='.$ppid.'">
+                                    echo '<a href="./allocate.php?id=' . $row['uuid'] . '&r=' . $_SERVER['REQUEST_URI'] . '&ppid=' . $ppid . '">
                                                     <li>
                         <div class="flex flex-col justify-center items-center p-3 m-4 border border-red-700 text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
                             
