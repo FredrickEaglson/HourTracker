@@ -17,8 +17,8 @@
         "\\.vscode",
         "\\.git",
         "\\.DS_Store"
-        ,"\\auth\\db.php",
-        "\\auth\\dbcon.php"
+        ,"\\db.php",
+        "\\dbcon.php"
     ],
     "generatedFiles": {
         "extensionsToInclude": [
