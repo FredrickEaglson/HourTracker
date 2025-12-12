@@ -1,4 +1,5 @@
 .ht*
 .env
 */temp.*
-*/.vscode/*
+.vscode/*
+ftp-sync.json
