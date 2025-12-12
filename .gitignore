@@ -2,3 +2,6 @@
 .env
 */temp.*
 .vscode/*
+.cache_ggshield
+./auth/db.php
+./auth/dbcon.php
