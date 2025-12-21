@@ -20,7 +20,7 @@
                         </li>
 
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="#"> Calendar </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/paychecks"> Paychecks </a>
                         </li>
 
                         <li>
@@ -33,7 +33,7 @@
                     <button type="button" class="overflow-hidden rounded-full border border-gray-300 shadow-inner" onclick="javascript:;" id="profDropDown">
                         <span class="sr-only">Toggle dashboard menu</span>
 
-                        <img src="<?php echo $_SESSION['profileIMG']; ?>" alt="" class="size-10 object-cover">
+                        <!--<img src="<?php /*echo $_SESSION['profileIMG'];*/ ?>" alt="" class="size-10 object-cover">-->
                     </button>
 
                     <div id="profDropDownMenu" class="hidden absolute end-0 z-10 mt-0.5 w-56 divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-lg" role="menu">

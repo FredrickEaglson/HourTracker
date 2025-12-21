@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <h3
                                     class="flex flex-row mr-6 text-lg payperiodname"
                                     aria-label="pay period name">
-                                    ' . date('M D, Y', strtotime($row['startdate'])) . ' - ' . date('M D, Y', strtotime($row['enddate']));
+                                    ' . date('M j, Y', strtotime($row['startdate'])) . ' - ' . date('M j, Y', strtotime($row['enddate']));
                                         echo '
                                 </h3>
                                 <br>

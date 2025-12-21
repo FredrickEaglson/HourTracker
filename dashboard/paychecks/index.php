@@ -2,7 +2,7 @@
 session_start();
 
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-$sql = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=?");
+$sql = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=?");
 $sql->bind_param("s", $_SESSION['userid']);
 $sql->execute();
 $result = $sql->get_result();
@@ -24,23 +24,23 @@ $result = $sql->get_result();
     <main class="flex flex-col mt-5 justify-center items-center m-auto p-auto mb-16 pb-4">
         <section>
             <div class="flex flex-col justify-center items-center ">
-                <h2 class="text-center">Pay Periods</h2>
-                <div aria-label="Pay period controls">
+                <h2 class="text-center">Pay Checks</h2>
+                <div aria-label="Pay Check controls">
                     <div class="flex flex-col justify-center items-center">
-                        <a href="new" class="w-auto inline-block"><i class="fa-solid fa-square-plus"></i> New Pay Period</a>
+                        <a href="new" class="w-auto inline-block"><i class="fa-solid fa-square-plus"></i> New Pay Check</a>
                     </div>
                 </div>
                 <ul>
                     <?php
                     $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
                     include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-                    $sql = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=?");
+                    $sql = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=?");
                     $sql->bind_param("s", $_SESSION['userid']);
                     $sql->execute();
                     $result = $sql->get_result();
 
                     if ($result->num_rows == 0) {
-                        echo "<h2 class='text-center'>You have no payperiods</h2>";
+                        echo "<h2 class='text-center'>You have no pay checks</h2>";
                     } else {
                         foreach ($result as $row) {
                             echo '
@@ -53,7 +53,7 @@ $result = $sql->get_result();
                             <span class="flex flex-row w-full justify-between ">
                                 <h3
                                     class="flex flex-row mr-6 text-lg payperiodname"
-                                    aria-label="pay period name">
+                                    aria-label="pay check name">
                                     ' . $row['name'] ?? date('M D, Y', strtotime($row['startdate']));
                             echo '
                                 </h3>
