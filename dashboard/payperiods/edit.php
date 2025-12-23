@@ -103,7 +103,7 @@ function formatmins($mins)
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Before Tax</label>
-                                <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate']*$row['hours']), "USD"); ?>">
+                                <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border1 h-full">
                                 <button type="submit" class="w-full h-full">Update</button>
@@ -120,65 +120,73 @@ function formatmins($mins)
                             <div class="mb-5">
                                 <ul>
                                     <?php
-                                    $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid`=?");
+                                    $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid`=? ORDER BY `date` ASC");
                                     $sql->bind_param("ss", $_SESSION['userid'], $row['ppid']);
                                     $sql->execute();
                                     $result2 = $sql->get_result();
                                     if ($result2->num_rows > 0) {
-                                        foreach ($result2 as $row2) {
+                                        foreach ($result2 as $row2) : ?>
+                                            <a href="#">
+                                                <li>
+                                                    <div class="flex flex-col justify-center items-center p-3 m-4 border  text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]
+                                                        <?php
+                                                        if ($row2['worked'] == FALSE) {
+                                                            echo 'border-yellow-600';
+                                                        } else {
+                                                            echo 'border-black';
+                                                        }
+                                                        ?>
+                                                    ">
 
-                                            echo '
-                    <a href="#">
-                    <li>
-                        <div
-                            
-                            class="flex flex-col justify-center items-center p-3 m-4 border border-black text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
-                            
-                            <span class="flex flex-row w-full justify-between ">
-                                <h3
-                                    class="flex flex-row mr-6 text-lg payperiodname"
-                                    aria-label="pay period name">
-                                    ' . date('D, M d, Y', strtotime($row2['date']));
-                                            echo '
-                                </h3>
-                                <span class="flex flex-row align-bottom text-lg">
-                                    <span class="flex flex-row mr-2 text-lg ">' . floor($row2['hours']) . ':' . formatmins(floor(($row2['hours'] - floor($row2['hours'])) * 60));
-                                            echo '</span>
-                                    <span class="flex flex-row text-red-700 text-lg ">' . $formatter->formatCurrency($row2['rate'], "USD");
-                                            echo '</span>  
-                            <span class="flex flex-row ml-2 text-lg ">' . $formatter->formatCurrency($row2['rate'] * $row2['hours'], "USD");
-                                            echo '</span> 
-                                </span>
-                            </span>
-                            <span>
-                            <a class="text-red-500 underline" href="./deallocate.php?id=' . $row2['uuid'] . '&ppid=' . $ppid . '&r=/dashboard/payperiods/edit.php?id=' . $ppid . '?Deallocate">Deallocate</a>
-                            </a>
-                            </span>
-                            
-                        </div>
-                    </li></a>';
-                                        }
-                                    }
-                                    ?>
+                                                        <span class="flex flex-row w-full justify-between ">
+                                                            <h3
+                                                                class="flex flex-row mr-6 text-lg payperiodname"
+                                                                aria-label="pay period name">
+                                                                <?= date('D, M d, Y', strtotime($row2['date'])) ?>
+
+                                                            </h3>
+                                                            <span class="flex flex-row align-bottom text-lg">
+                                                                <span class="flex flex-row mr-2 text-lg "> <?= floor($row2['hours']) . ':' . formatmins(floor(($row2['hours'] - floor($row2['hours'])) * 60)) ?>
+                                                                </span>
+                                                                <span class="flex flex-row text-red-700 text-lg "><?= $formatter->formatCurrency($row2['rate'], "USD") ?>
+                                                                </span>
+                                                                <span class="flex flex-row ml-2 text-lg "> <?= $formatter->formatCurrency($row2['rate'] * $row2['hours'], "USD"); ?>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                        <span>
+                                                            <a class="text-red-500 underline" href="./deallocate.php?id=' . $row2['uuid'] . '&ppid=' . $ppid . '&r=/dashboard/payperiods/edit.php?id=' . $ppid . '?Deallocate">Deallocate</a>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </a>
+
+                                    <?php endforeach;
+                                    } ?>
                                 </ul>
                             </div>
+                        </div>
 
 
-                            <?php
+                        </ul>
+                </div>
 
-                            include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-                            $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid` IS null OR `ppid`=''");
-                            $sql->bind_param("s", $_SESSION['userid']);
-                            $sql->execute();
-                            $result = $sql->get_result();
-                            echo $result->num_rows;
-                            if ($result->num_rows == 0 && sizeof($_SESSION['tempshifts']) == 1) {
-                                echo "<h2 class='text-center'>You have no unallocated shifts</h2>";
-                                echo "<input type='hidden' name='shifts[]' value=''>";
-                            } else {
-                                echo '<ul>';
-                                foreach ($result as $row) {
-                                    echo '<a href="./allocate.php?id=' . $row['uuid'] . '&r=' . $_SERVER['REQUEST_URI'] . '&ppid=' . $ppid . '">
+
+                <?php
+
+                include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
+                $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? AND `ppid` IS null OR `ppid`=''");
+                $sql->bind_param("s", $_SESSION['userid']);
+                $sql->execute();
+                $result = $sql->get_result();
+                echo $result->num_rows;
+                if ($result->num_rows == 0 && sizeof($_SESSION['tempshifts']) == 1) {
+                    echo "<h2 class='text-center'>You have no unallocated shifts</h2>";
+                    echo "<input type='hidden' name='shifts[]' value=''>";
+                } else {
+                    echo '<ul>';
+                    foreach ($result as $row) {
+                        echo '<a href="./allocate.php?id=' . $row['uuid'] . '&r=' . $_SERVER['REQUEST_URI'] . '&ppid=' . $ppid . '">
                                                     <li>
                         <div class="flex flex-col justify-center items-center p-3 m-4 border border-red-700 text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
                             
@@ -189,33 +197,33 @@ function formatmins($mins)
                                     class="flex flex-row mr-6 text-lg payperiodname"
                                     aria-label="pay period name">
                                     ' . date('D, M d, Y', strtotime($row['date']));
-                                    echo '
+                        echo '
                                 </h3>
                                 </span>
                                 <span class="flex flex-row align-bottom text-lg">
                                     <span class="flex flex-row mr-2 text-lg ">' . floor($row['hours']) . ':' . formatmins(floor(($row['hours'] - floor($row['hours'])) * 60));
-                                    echo '</span>
+                        echo '</span>
                                     <span class="flex flex-row text-red-700 text-lg ">' . $formatter->formatCurrency($row['rate'], "USD");
-                                    echo '</span>  
+                        echo '</span>  
                             <span class="flex flex-row ml-2 text-lg ">' . $formatter->formatCurrency($row['rate'] * $row['hours'], "USD");
-                                    echo '</span> 
+                        echo '</span> 
                                 </span>
                             </span>
                             
                         </div>
                     </li></a>';
-                                }
-                                echo '</ul>';
-                            }
+                    }
+                    echo '</ul>';
+                }
 
-                            ?>
+                ?>
 
 
-                            <div class="p-2 bg-slate-200 rounded border1 mt-2 h-full">
-                                <a href='/dashboard/shifts/new' class="w-full h-full">Add Shifts</a>
-                            </div>
-                    </form>
+                <div class="p-2 bg-slate-200 rounded border1 mt-2 h-full">
+                    <a href='/dashboard/shifts/new' class="w-full h-full">Add Shifts</a>
                 </div>
+                </form>
+            </div>
 
             </div>
             </div>

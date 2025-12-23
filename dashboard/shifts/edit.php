@@ -64,11 +64,11 @@ function formatmins($mins)
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="enddate">Clock In</label>
-                                <input type="time" class="max-w-full" name="enddate" required value="<?php echo date("G:i", strtotime($row['clockin'])); ?>">
+                                <input type="time" class="max-w-full" name="enddate"  value="<?php echo date("G:i", strtotime($row['clockin'])); ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="enddate">Clock Out</label>
-                                <input type="time" class="max-w-full" name="enddate" required value="<?php echo date("G:i", strtotime($row['clockout'])); ?>">
+                                <input type="time" class="max-w-full" name="enddate"  value="<?php echo date("G:i", strtotime($row['clockout'])); ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="payrate">Pay Rate</label>
@@ -84,12 +84,12 @@ function formatmins($mins)
                             </div>
                             
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="periodID">Total Time</label>
-                                <input type="text" class="max-w-full" name="hours" readonly value="<?php echo floor($row['hours']) . ':' . formatmins(floor(($row['hours'] - floor($row['hours'])) * 60)) ?>">
+                                <label for="periodID">Hours</label>
+                                <input type="text" class="max-w-full" name="hours"  value="<?php echo floor($row['hours']) . ':' . formatmins(floor(($row['hours'] - floor($row['hours'])) * 60)) ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Before Tax</label>
-                                <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
+                                <input type="text" class="max-w-full" name="hourly"  value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border1 h-full">
                                 <button type="submit" class="w-full h-full">Update</button>

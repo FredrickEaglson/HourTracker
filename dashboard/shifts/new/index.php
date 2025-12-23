@@ -17,22 +17,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sql->execute();
     header("Location: ../");
 
-    if ($_POST['periodID']!=''){
+    if ($_POST['periodID'] != '') {
         $sql = $con->prepare("SELECT * FROM `payperiods` WHERE `ppid`=?");
         $sql->bind_param("s", $_POST['periodID']);
         $sql->execute();
         $result = $sql->get_result();
         if ($result->num_rows == 0) {
-            
-        }
-        else {
+        } else {
             $row3 = $result->fetch_assoc()[0];
             $pphours = $hours + $row3['hours'];
             $ppshiftids = $shifts . ',' . $row3['shift_ids'];
-            $ppshifts = $row3['shifts']+1;
+            $ppshifts = $row3['shifts'] + 1;
 
-            $sql = $con->prepare("UPDATE `payperiods` SET `hours`=?, `shifts`=?,shift_ids=? WHERE `ppid`=?");
-            $sql->bind_param("ssss", $pphours, $ppshifts,$ppshiftids, $_POST['periodID']);
+            $sql = $con->prepare("UPDATE `payperiods` SET `hours`=?, `shifts`=?,shift_ids=?,worked=? WHERE `ppid`=?");
+            $sql->bind_param("ssss", $pphours, $ppshifts, $ppshiftids,$_POST['worked'], $_POST['periodID']);
             $sql->execute();
         }
     }
@@ -81,7 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="userid">Minutes</label>
-                                <input type="number" class="max-w-full border border-black border-solid pl-1" name="minutes" required>
+                                <input type="number" class="max-w-full border border-black border-solid pl-1" name="minutes" required value="0">
+                            </div>
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                <label for="userid">Worked?</label>
+                                <input type="checkbox" class="max-w-full border border-black border-solid pl-1" name="worked" value="TRUE">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Shift ID</label>
