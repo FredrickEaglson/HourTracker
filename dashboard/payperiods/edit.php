@@ -105,14 +105,21 @@ function formatmins($mins)
                                 <label for="periodID">Before Tax</label>
                                 <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border1 h-full">
-                                <button type="submit" class="w-full h-full">Update</button>
-                            </div>
-                            <div class="p-2 bg-slate-200 rounded border1 h-full text-center">
-                                <a class="w-full h-full text-center" href="./update.php?id=<?php echo $row['ppid'] . "&r=" . $_SERVER['REQUEST_URI']; ?>">Update Hours</a>
-                            </div>
-                            <div class="p-2  rounded border1 h-full text-center bg-red-100">
-                                <a class="w-full h-full text-center text-red-700 " href="./delete.php?a=0&id=<?php echo $row['ppid'] . "&r=index.php"; ?>">Delete Payperiod</a>
+                            <div class="col-span-3">
+                                <div class="grid grid-cols-4 gap-4">
+                                    <div class="p-2 bg-slate-200 rounded border1 h-full">
+                                        <button type="submit" class="w-full h-full">Update</button>
+                                    </div>
+                                    <div class="p-2 bg-slate-200 rounded border1 h-full text-center">
+                                        <a class="w-full h-full text-center" href="../paychecks/preview/index.php?id=<?= $row['ppid']  ?>">Preview Paycheck</a>
+                                    </div>
+                                    <div class="p-2 bg-slate-200 rounded border1 h-full text-center">
+                                        <a class="w-full h-full text-center" href="./update.php?id=<?php echo $row['ppid'] . "&r=" . $_SERVER['REQUEST_URI']; ?>">Update Hours</a>
+                                    </div>
+                                    <div class="p-2  rounded border1 h-full text-center bg-red-100">
+                                        <a class="w-full h-full text-center text-red-700 " href="./delete.php?a=0&id=<?php echo $row['ppid'] . "&r=index.php"; ?>">Delete Payperiod</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

@@ -2,7 +2,38 @@
 include "dbcon.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    
+    function validatePasswordStrength($password)
+    {
+        $errors = [];
+
+        // Minimum length
+        if (strlen($password) < 8) {
+            $errors[] = "Password must be at least 8 characters long.";
+        }
+
+        // At least one uppercase letter
+        if (!preg_match('/[A-Z]/', $password)) {
+            $errors[] = "Password must include at least one uppercase letter.";
+        }
+
+        // At least one lowercase letter
+        if (!preg_match('/[a-z]/', $password)) {
+            $errors[] = "Password must include at least one lowercase letter.";
+        }
+
+        // At least one number
+        if (!preg_match('/[0-9]/', $password)) {
+            $errors[] = "Password must include at least one number.";
+        }
+
+        // At least one special character (non-alphanumeric)
+        if (!preg_match('/[^A-Za-z0-9]/', $password)) {
+            $errors[] = "Password must include at least one special character.";
+        }
+
+        return $errors; // Returns an array of errors, or an empty array if strong
+    }
+
     $fullname = $_POST['fullname'];
     $firstname = $lastname = $middlename = '';
     if (sizeof(explode(" ", $fullname)) == 2) {
@@ -23,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['pswrd1'];
     $password2 = $_POST['pswrd2'];
-    
+
     $pattern1 = `/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/`;
 
     if ($password != $password2) {
@@ -31,15 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die;
     }
 
-    if (sizeof(validatePasswordStrength($password))>0||sizeof(validatePasswordStrength($password2))){
-     $http_response_header["x-password-errors"] = join(";",validatePasswordStrength($password));
+    if (sizeof(validatePasswordStrength($password)) > 0 || sizeof(validatePasswordStrength($password2))) {
+        $http_response_header["x-password-errors"] = join(";", validatePasswordStrength($password));
     }
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-    
 
-    $sql = $con->prepare("INSERT INTO accounts (email, passwordHash, firstname, lastname, middlename, prefferedName) VALUES (?, ?, ?, ?, ?)");
-    $sql->bind_param("sssss", $email, $passwordHash, $firstname, $lastname, $middlename,$fullname);
+
+    $sql = $con->prepare("INSERT INTO accounts (email, passwordHash, firstname, lastname, middlename, prefferedName) VALUES (?, ?, ?, ?, ?,?)");
+    $sql->bind_param("ssssss", $email, $passwordHash, $firstname, $lastname, $middlename, $fullname);
     $sql->execute();
     if ($sql->affected_rows == 1) {
         echo "Account created successfully";

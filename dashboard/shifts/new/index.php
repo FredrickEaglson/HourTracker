@@ -39,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -83,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="userid">Worked?</label>
-                                <input type="checkbox" class="max-w-full border border-black border-solid pl-1" name="worked" value="TRUE">
+                                <input type="checkbox" class="max-w-full border border-black border-solid pl-1" name="worked" checkeds>
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Shift ID</label>

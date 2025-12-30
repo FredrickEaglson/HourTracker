@@ -24,7 +24,10 @@
                         </li>
 
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="#"> Plans </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT']."/logout.php" ?>"> Logout </a>
+                        </li>
+                        <li>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT']."/settings" ?>"> Settings </a>
                         </li>
                     </ul>
                 </nav>

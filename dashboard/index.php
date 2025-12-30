@@ -42,8 +42,12 @@ $shifts=$sql3->get_result();
 
 <body class="w-screen">
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
-    <main class="m-6 border border-black radius-6 p-4 grid grid-cols-2">
-        <section class="flex flex-col">
+    
+    <main class="m-3 p-3 grid grid-cols-2 gap-2">
+        
+        
+
+        <section class="p-4 border-[3px] rounded-3xl border-black border-solid flex flex-col">
             <div class="flex flex-col justify-center items-center ">
                 <h2 class="text-center text-lg font-bold text-teal-950 nunito-bold">Pay Periods</h2>
                 <div aria-label="Pay period controls">
@@ -95,13 +99,14 @@ $shifts=$sql3->get_result();
                 </ul>
             </div>
         </section>
-        <section>
+
+        <section class="flex flex-col p-4 rounded-3xl border-[3px] border-solid border-black">
             <div class="flex flex-col justify-center items-center ">
                 <h2 class="text-center text-teal-950 font-bold text-lg nunito-bold">Shifts</h2>
 
                 <div aria-label="Pay period controls">
                     <div class="flex flex-col justify-center items-center">
-                        <button id="newpp" class="w-auto inline-block"><i class="fa-solid fa-square-plus"></i> New Pay Period</button>
+                        <button id="newpp" class="w-auto inline-block"><i class="fa-solid fa-square-plus"></i> New Shift</button>
                     </div>
                     <div class="flex flex-col justify-center items-center ">
                         <?= $numshifts ?> Shifts
@@ -109,27 +114,23 @@ $shifts=$sql3->get_result();
                 </div>
 
                 <div>
-                    <table class="mb-4">
+                    <table class="mb-4 gap- border-collapse">
                         <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Start Time</th>
-                                <th>End Time</th>
-                                <th>Hours</th>
-                                <th>Rate</th>
-                                <th>Pretax</th>
+                            <tr class="border border-black border-solid background">
+                                <th class="border border-black border-solid">Date</th>
+                                <th class="border border-black border-solid">Hours</th>
+                                <th class="border border-black border-solid">Rate</th>
+                                <th class="border border-black border-solid">Pretax</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach($shifts as $shift): ?>
 
-                                <tr>
-                                    <td><?= $shift['date'] ?></td>
-                                    <td><?= $shift['clockin'] ?></td>
-                                    <td><?= $shift['clockout'] ?></td>
-                                    <td><?= round($shift['hours'],2) ?></td>
-                                    <td><?= $shift['rate'] ?></td>
-                                    <td><?= round($shift['rate'] * $shift['hours'],2)?></td>
+                                <tr class="border border-black border-solid">
+                                    <td class="border border-black border-solid"><?= $shift['date'] ?></td>
+                                    <td class="border border-black border-solid"><?= round($shift['hours'],2) ?></td>
+                                    <td class="border border-black border-solid"><?= $shift['rate'] ?></td>
+                                    <td class="border border-black border-solid"><?= round($shift['rate'] * $shift['hours'],2)?></td>
                                 </tr>
 
                             <?php endforeach; 
@@ -156,6 +157,7 @@ $shifts=$sql3->get_result();
             </div>
             </div>
         </section>
+    
     </main>
 
 

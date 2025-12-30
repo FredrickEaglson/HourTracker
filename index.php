@@ -1,7 +1,9 @@
 <?php
 session_start();
 
-if (isset($_SESSION['user']) && $_SESSION['loggedin'] == true) {
+
+
+if (isset($_SESSION['userid']) && $_SESSION['loggedin'] == true) {
     header("Location: http://localhost/dashboard/index.php");
 }
 $errs='';

@@ -1,7 +1,7 @@
 <?php 
 session_start();
 
-if (isset($_SESSION['user']) && $_SESSION['loggedin'] == true) {
+if (!isset($_SESSION['user']) && $_SESSION['loggedin'] != true) {
     header("Location: dashboard/index.php");
 } 
 
@@ -13,3 +13,4 @@ switch ($_GET['r']) {
     default:
         header("Location: login.php");
 }
+

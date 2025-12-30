@@ -30,6 +30,15 @@ body {
     "wdth" 100;
 }
 
+.roboto-bold {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
 
 .nunito-norm {
   font-family: "Nunito", sans-serif;
@@ -47,4 +56,15 @@ body {
 .show {
 
   display:block
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0; /* Important for older Chrome versions */
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+  appearance: none; /* Other browsers (Edge, modern standards) */
 }
