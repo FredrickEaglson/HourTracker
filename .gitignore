@@ -5,3 +5,5 @@
 .cache_ggshield
 auth/db*
 *.code-workspace
+WorkOS/*
+vendor/*
