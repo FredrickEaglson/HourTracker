@@ -59,7 +59,7 @@ function formatmins($mins)
 
 </head>
 
-<body class="w-screen">
+<body class="w-full">
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
     <main>
         <section class="place-content-center">
@@ -69,54 +69,54 @@ function formatmins($mins)
                     <form class="w-full max-w-md" method="post">
 
                         <div class="grid grid-cols-3 grid-rows-2 gap-4">
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="name">Name</label>
                                 <input type="text" class="max-w-full border border-black" name="name" value="<?php echo $row['name']; ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="startdate">Start Date</label>
                                 <input type="date" class="max-w-full" name="startdate" required value="<?php echo date("Y-m-d", strtotime($row['startdate'])); ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="enddate">End Date</label>
                                 <input type="date" class="max-w-full" name="enddate" required value="<?php echo date("Y-m-d", strtotime($row['enddate'])); ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="payrate">Pay Rate</label>
                                 <input type="number" class="max-w-full border border-black border-solid" step="0.01" name="payrate" value="<?php echo $row['rate']; ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="userid">User ID</label>
                                 <input type="text" class="max-w-full" name="userid" readonly value="<?php echo $row['userid']; ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Pay Period ID</label>
                                 <input type="text" class="max-w-full" name="payperiodID" readonly value="<?php echo $row['ppid']; ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="shifts">Shifts</label>
                                 <input type="text" class="max-w-full" name="shifts" readonly value="<?php echo $row['shifts']; ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Total Time</label>
                                 <input type="text" class="max-w-full" name="hours" readonly value="<?php echo floor($row['hours']) . ':' . formatmins(floor(($row['hours'] - floor($row['hours'])) * 60)) ?>">
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Before Tax</label>
                                 <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
                             </div>
                             <div class="col-span-3">
                                 <div class="grid grid-cols-4 gap-4">
-                                    <div class="p-2 bg-slate-200 rounded border1 h-full">
+                                    <div class="p-2 sm:p-auto bg-slate-200 rounded border1 h-full">
                                         <button type="submit" class="w-full h-full">Update</button>
                                     </div>
-                                    <div class="p-2 bg-slate-200 rounded border1 h-full text-center">
+                                    <div class="p-2 sm:p-auto bg-slate-200 rounded border1 h-full text-center">
                                         <a class="w-full h-full text-center" href="../paychecks/preview/index.php?id=<?= $row['ppid']  ?>">Preview Paycheck</a>
                                     </div>
-                                    <div class="p-2 bg-slate-200 rounded border1 h-full text-center">
+                                    <div class="p-2 sm:p-auto bg-slate-200 rounded border1 h-full text-center">
                                         <a class="w-full h-full text-center" href="./update.php?id=<?php echo $row['ppid'] . "&r=" . $_SERVER['REQUEST_URI']; ?>">Update Hours</a>
                                     </div>
-                                    <div class="p-2  rounded border1 h-full text-center bg-red-100">
+                                    <div class="p-2 sm:p-auto  rounded border1 h-full text-center bg-red-100">
                                         <a class="w-full h-full text-center text-red-700 " href="./delete.php?a=0&id=<?php echo $row['ppid'] . "&r=index.php"; ?>">Delete Payperiod</a>
                                     </div>
                                 </div>
@@ -135,7 +135,7 @@ function formatmins($mins)
                                         foreach ($result2 as $row2) : ?>
                                             <a href="#">
                                                 <li>
-                                                    <div class="flex flex-col justify-center items-center p-3 m-4 border  text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]
+                                                    <div class="flex flex-col justify-center items-center p-3 m-4 border sm:m sm:p  text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]
                                                         <?php
                                                         if ($row2['worked'] == FALSE) {
                                                             echo 'border-yellow-600';
@@ -145,10 +145,10 @@ function formatmins($mins)
                                                         ?>
                                                     ">
 
-                                                        <span class="flex flex-row w-full justify-between ">
+                                                        <span class="flex flex-row w-full sm: justify-between ">
                                                             <h3
-                                                                class="flex flex-row mr-6 text-lg payperiodname"
-                                                                aria-label="pay period name">
+                                                                class="flex flex-row mr-6 sm:mr-1 text-lg payperiodname"
+                                                                aria-label="shift date">
                                                                 <?= date('D, M d, Y', strtotime($row2['date'])) ?>
 
                                                             </h3>

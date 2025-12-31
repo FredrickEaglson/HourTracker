@@ -62,7 +62,7 @@ function formatmins($mins)
 
 </head>
 
-<body class="w-screen">
+<body class="w-full">
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
     <main>
         <section class="place-content-center">

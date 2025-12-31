@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="grid grid-cols-3 grid-rows-2 gap-4">
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="startdate">Date</label>
-                                <input type="date" class="max-w-full" name="date" value="<?php echo date("Y-m-d", time()); ?>" required>
+                                <input type="date" class="max-w-full" name="date" value="<?php echo date("Y-m-d", time()-(60*60*24)); ?>" required>
                             </div>
 
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label for="periodID">Pay Period</label>
                                 <?php
                                 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-                                $sql = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=?");
+                                $sql = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=? ORDER BY `startdate` DESC");
                                 $sql->bind_param("s", $_SESSION['userid']);
                                 $sql->execute();
                                 $result = $sql->get_result();
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     echo "<input type='hidden' name='' value=''>";
                                 } else {
                                     echo "<select name='periodID'>";
-                                    echo "<option value=''>Payperiod or leave blank</option>";
+                                    
                                     foreach ($result as $row) {
                                         echo "<option value='" . $row['ppid'] . "'>";
                                         echo '<div

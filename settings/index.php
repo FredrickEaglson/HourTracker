@@ -2,12 +2,30 @@
 session_start();
 
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
+
 $sql = $con->prepare("SELECT * FROM `accounts` WHERE `userid`=?");
 $sql->bind_param("s", $_SESSION['userid']);
 $sql->execute();
 $result = $sql->get_result();
 $sql->close();
 $row = $result->fetch_assoc();
+
+$sql2 = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=?");
+$sql2->bind_param("s", $_SESSION['userid']);
+$sql2->execute();
+$ppresult = $sql2->get_result();
+
+
+$sql3 = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=?");
+$sql3->bind_param("s", $_SESSION['userid']);
+$sql3->execute();
+$shiftresult = $sql3->get_result();
+
+$sql4 = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=?");
+$sql4->bind_param("s", $_SESSION['userid']);
+$sql4->execute();
+$pcresult = $sql4->get_result();
+
 ?>
 
 <!DOCTYPE html>
@@ -17,25 +35,41 @@ $row = $result->fetch_assoc();
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/head.php"; ?>
 </head>
 
-<body class="w-screen">
+<body class="w-full">
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
 
-    <main class="m-3 p-6 ml-0">
+    <main class="m-3 p-6 ml-0 w-full">
         <h1 class="text-4xl roboto-bold">Settings</h1>
-        <form method="post">
-            <section class="m-3 p-3 grid grid-cols-3 flex flex-col justify">
-                <div class="p-2 m-3 max-w-100 col-span-3 flex flex-row rounded-3xl border text-center border-black border-solid">
+        <form method="post" class="w-full">
+            <section class="m-auto p-3 grid grid-cols-3 w-full justify-items-center  justify-center space-between">
+                <div class="border rounded-4xl">
                     <div class="p-2 m-3 max-w-100 text-center">
                         <label class="nunito-bold" for="">First Name<span class="text-red-700">*</span></label><br>
                         <input type="text" class="max-w-full border p-1 rounded-full" name="firstname" required value="<?= $row['firstname'] ?>">
                     </div>
                     <div class="p-2 m-3 max-w-100 text-center">
-                        <label class="nunito-bold" for="">Middle Name<span class="text-red-700">*</span></label><br>
-                        <input type="text" class="max-w-full border p-1 rounded-full" name="middlename" required value="<?= $row['middlename'] ?>">
+                        <label class="nunito-bold" for="">Middle Name</label><br>
+                        <input type="text" class="max-w-full border p-1 rounded-full" name="middlename"  value="<?= $row['middlename'] ?>">
                     </div>
                     <div class="p-2 m-3 max-w-100 text-center">
                         <label class="nunito-bold" for="">Last Name<span class="text-red-700">*</span></label><br>
                         <input type="text" class="max-w-full border p-1 rounded-full" name="lastname" required value="<?= $row['lastname'] ?>">
+                    </div>
+                </div>
+                <div class="border rounded-4xl">
+                    <div class="p-2 m-3 max-w-100 text-center">
+                        <a href="<?= $_SERVER['SRVROOT'] ?>/dashboard/payperiods"><p class="nunito-bold" style="font-size:1.5rem">Total Pay Periods:
+                        <span class="max-w-full" ><?= $ppresult->num_rows ?></span></p></a>
+                    </div>
+                
+                    <div class="p-2 m-3 max-w-100 text-center">
+                        <a href="<?= $_SERVER['SRVROOT'] ?>/dashboard/shifts"><p class="nunito-bold" style="font-size:1.5rem">Total Shifts:
+                        <span class="max-w-full" ><?= $shiftresult->num_rows ?></span></p></a>
+                    </div>
+                
+                    <div class="p-2 m-3 max-w-100 text-center">
+                        <a href="<?= $_SERVER['SRVROOT'] ?>/dashboard/paychecks"><p class="nunito-bold" style="font-size:1.5rem">Total Pay Checks:
+                        <span class="max-w-full" ><?= $pcresult->num_rows ?></span></p></a>
                     </div>
                 </div>
             </section>

@@ -34,7 +34,7 @@ $result = $sql->get_result();
                     <?php
                     $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
                     include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-                    $sql = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=?");
+                    $sql = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=? ORDER BY `startdate` DESC");
                     $sql->bind_param("s", $_SESSION['userid']);
                     $sql->execute();
                     $result = $sql->get_result();

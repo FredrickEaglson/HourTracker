@@ -13,7 +13,7 @@ function hoursMins($hours)
 }
 $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-$sql = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=? LIMIT 5");
+$sql = $con->prepare("SELECT * FROM `payperiods` WHERE `userid`=? ORDER BY `startdate` DESC LIMIT 5");
 $sql->bind_param("s", $_SESSION['userid']);
 $sql->execute();
 $result = $sql->get_result();
