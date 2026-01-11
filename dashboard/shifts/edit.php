@@ -1,5 +1,5 @@
 <?php
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
@@ -38,23 +38,25 @@ function formatmins($mins)
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
     $ppid = $_POST['payperiodID'];
     $userid = $_POST['userid'];
     $worked;
     $date = $_POST['date'];
-    $clockin = $_POST['clockin']??"0";
-    $clockout = $_POST['clockout']??"0";
     $rate = $_POST['rate'];
-    $hours = ($_POST['minutes']/60)+$_POST['hours'];
+
+
+    $minutes = $_POST['hours'] * 60 + $_POST['minutes'];
     
-    if (isset($_POST['workedcb'])){
+
+    if ($_POST['workedcb'] == "1") {
         $worked = 1;
     } else {
         $worked = 0;
     }
 
-    $sql = $con->prepare("UPDATE `shifts` SET `worked`=?, `date`=?, `clockin`=?, `clockout`=?, `rate`=?, `hours`=? WHERE `uuid`=? && `userid`=?");
-    $sql->bind_param("isssddss", $worked, $date, $clockin, $clockout, $rate, $hours,  $id, $_SESSION['userid']);
+    $sql = $con->prepare("UPDATE `shifts` SET `worked`=?, `date`=?,  `rate`=?, `minutes`=? WHERE `uuid`=? && `userid`=?");
+    $sql->bind_param("isddss", $worked, $date, $rate, $minutes,  $id, $_SESSION['userid']);
     $sql->execute();
 }
 
@@ -74,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <main>
         <section class="place-content-center">
             <div class="flex flex-col justify-center items-center p-3 m-4 border-solid rounded-4xl  border-4 border-black shadow-2xl">
-                <h2 class="text-center text-2xl mb-5">Edit Pay Period</h2>
+                <h2 class="text-center text-2xl mb-5">Edit Shift</h2>
                 <div class="flex flex-col justify-center items-center w-full">
                     <form class="w-full max-w-md" method="post">
 
@@ -86,11 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="enddate">Clock In</label>
-                                <input type="time" class="max-w-full" name="clockin" value="<?php echo date("G:i", strtotime($row['clockin'])); ?>">
+                                <input type="time" class="max-w-full" name="clockin">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="enddate">Clock Out</label>
-                                <input type="time" class="max-w-full" name="clockout" value="<?php echo date("G:i", strtotime($row['clockout'])); ?>">
+                                <input type="time" class="max-w-full" name="clockout">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="rate">Pay Rate</label>
@@ -107,19 +109,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="hours">Hours:Minutes</label>
-                                <span class="flex"><input type="number" class="inline-block w-[2rem]" name="hours" value="<?php echo floor($row['hours']) ?>">: <input type="number" class="inline-block ml-1 w-[4rem]" name="minutes" value="<?php echo formatmins(floor(($row['hours'] - floor($row['hours'])) * 60)) ?>"></span>
+                                <span class="flex"><input type="number" class="inline-block w-[2rem]" name="hours" step="0.001" value="<?php echo floor($row['minutes'] / 60); ?>">: <input type="number" class="inline-block ml-1 w-[4rem]" name="minutes" value="<?php echo formatmins($row['minutes'] % 60); ?>"></span>
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="hourly">Before Tax</label>
-                                <input type="text" class="max-w-full" name="hourly" value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
+                                <input type="text" class="max-w-full" name="hourly" value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['minutes'] / 60), "USD"); ?>">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Worked</label><br>
-                                <input type="checkbox" class="max-w-full" name="workedcb" <?php if ($row['worked'] == 1) {
-                                                                                                    echo "checked";
-                                                                                                } else {
-                                                                                                    echo "";
-                                                                                                } ?>>
+                                <select name="workedcb">
+                                    <option value="1" <?php if ($row['worked']) {
+                                                            echo "selected";
+                                                        } ?>>worked</option>
+                                    <option value="0" <?php if (!$row['worked']) {
+                                                            echo "selected";
+                                                        } ?>>scheduled</option>
+
+                                </select>
                             </div>
                             <div class="p-2 bg-slate-200 rounded border1 h-full">
                                 <button type="submit" class="w-full h-full">Update</button>

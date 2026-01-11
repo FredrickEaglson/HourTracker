@@ -1,6 +1,5 @@
 <?php
-session_start();
-
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 
 $id = $_GET['id'];

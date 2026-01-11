@@ -1,5 +1,5 @@
 <?php
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 
@@ -71,6 +71,25 @@ $pcresult = $sql4->get_result();
                         <a href="<?= $_SERVER['SRVROOT'] ?>/dashboard/paychecks"><p class="nunito-bold" style="font-size:1.5rem">Total Pay Checks:
                         <span class="max-w-full" ><?= $pcresult->num_rows ?></span></p></a>
                     </div>
+                </div>
+                <div class="border rounded-4xl">
+                    <div class="p-2 m-3 max-w-100 text-center">
+                        <label for="weekstartday" class="nunito-bold">Week Start Day</label><br>
+                        <select name="weekstartday">
+                            <option value="0">Sunday</option>
+                            <option value="1" selected>Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                        </select>
+                    </div>
+                        <div class="p-2 m-3 max-w-100 text-center">
+                        <label class="nunito-bold" for="">Pay Period Length</label><br>
+                        <input type="number" class="max-w-full border p-1 rounded-full" name="lastname" required value="<?= $row['pplength'] ?>">
+                    </div>    
+                    
                 </div>
             </section>
         </form>

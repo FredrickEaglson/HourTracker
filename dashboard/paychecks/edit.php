@@ -1,5 +1,5 @@
 <?php
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;

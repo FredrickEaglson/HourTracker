@@ -22,6 +22,10 @@
                         <li>
                             <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/paychecks"> Paychecks </a>
                         </li>
+                        <li>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/tasks"> Tasks </a>
+                        </li>
+
 
                         <li>
                             <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT']."/logout.php" ?>"> Logout </a>

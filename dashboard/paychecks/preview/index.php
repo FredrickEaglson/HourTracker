@@ -1,11 +1,12 @@
 <?php
 
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 
 $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
 $ppid = '';
+$overtime = 0.0;
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 
 $id = $_GET['id'];
@@ -31,6 +32,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit(10);
 }
 
+$sqlshifts['weekone'] = $con->prepare("SELECT * FROM `shifts` WHERE `ppid`=? AND `userid`=? AND `date`>=? AND `date`<=?");
+
+$weekoneend = strtotime($ppinfo['startdate']) + 6 * 24 * 60 * 60;
+$sqlshifts['weekone']->bind_param("ssss", $row['ppid'], $_SESSION['userid'], $ppinfo['startdate'], $weekoneend);
+
+$sqlshifts['weekone']->execute();
+$weekone = $sqlshifts['weekone']->get_result();
+
+echo "SELECT * FROM `shifts` WHERE `ppid`='" . $row['ppid'] . "' AND `userid`='" . $_SESSION['userid'] . "' AND `date`<='" . $ppinfo['startdate'] . "' AND `date`>='" . date("Y-m-d", $weekoneend) . "'";
+
+echo $weekone->num_rows . "<br>";
+
+$weekonearr['x-totalminutes'] = 0.0;
+foreach ($weekone as $shift) {
+
+    $weekonearr['x-totalminutes'] += $shift['minutes'];
+    echo $weekonearr['x-totalminutes'];
+}
+if ($weekonearr['x-totalminutes'] > 40 * 60) {
+    $overtime += $weekonearr['x-totalminutes'] - 40 * 60;
+}
+
+
+$sqlshifts['weektwo'] = $con->prepare("SELECT * FROM `shifts` WHERE `ppid`=? AND `userid`=? AND `date`>=? AND `date`<=?");
+$weektwostart = strtotime($ppinfo['startdate']) + 7 * 24 * 60 * 60;
+$sqlshifts['weektwo']->bind_param("ssss", $row['ppid'], $_SESSION['userid'], $weektwostart, $ppinfo['enddate']);
+$sqlshifts['weektwo']->execute();
+$weektwo = $sqlshifts['weektwo']->get_result();
+
+$weektwoarr['x-totalminutes'] = 0.0;
+foreach ($weekone as $shift) {
+    $weektwoarr['x-totalminutes'] += $shift['minutes'];
+}
+if ($weektwoarr['x-totalminutes'] > 40 * 60) {
+    $overtime += $weektwoarr['x-totalminutes'] - 40 * 60;
+}
+
+
+
+
 
 $sql3 = $con->prepare("SELECT AVG(`taxrate`) AS taxrate, AVG(`realrate`) AS realrate FROM paychecks WHERE `userid`=?");
 $sql3->bind_param("s", $_SESSION['userid']);
@@ -39,6 +80,8 @@ $sql3->execute();
 $result3 = $sql3->get_result()->fetch_assoc();
 $estTaxRate = $result3['taxrate'];
 $estRealRate = $result3['realrate'];
+
+
 
 function formatmins($mins)
 {
@@ -108,14 +151,23 @@ function formatmins($mins)
                                 <label for="periodID">Minutes</label>
                                 <input type="number" class="max-w-full" name="minutes" value="<?php echo formatmins(floor(($row['hours'] - floor($row['hours'])) * 60)) ?>">
                             </div>
+                            <?php
+                            if ($overtime != 0.0):
+                            ?>
+                                <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                    <label for="periodID">Paid Hours</label>
+                                    <input type="number" class="max-w-full" name="hours" value="<?php echo floor($row['hours'] + $overtime / 120) ?>">
+                                </div>
 
 
+                            <?php
+                            endif;
+                            ?>
 
                             <div class="p-2 bg-green-200 rounded border border-black border-solid">
                                 <label for="periodID">Hourly</label>
                                 <input type="text" class="max-w-full" name="hourly" readonly value="<?php echo $formatter->formatCurrency($row['hours'] * $row['rate'], "USD"); ?>">
                             </div>
-
 
                             <div class="p-2 bg-green-200 rounded border border-black border-solid">
                                 <label for="periodID">Est. Tax Rate</label>
@@ -168,11 +220,11 @@ function formatmins($mins)
 
                                                             </h3>
                                                             <span class="flex flex-row align-bottom text-lg">
-                                                                <span class="flex flex-row mr-2 text-lg "> <?= floor($row2['hours']) . ':' . formatmins(floor(($row2['hours'] - floor($row2['hours'])) * 60)) ?>
+                                                                <span class="flex flex-row mr-2 text-lg "> <?= floor($row2['minutes'] / 60) . ':' . formatmins($row2['minutes'] % 60) ?>
                                                                 </span>
                                                                 <span class="flex flex-row text-red-700 text-lg "><?= $formatter->formatCurrency($row2['rate'], "USD") ?>
                                                                 </span>
-                                                                <span class="flex flex-row ml-2 text-lg "> <?= $formatter->formatCurrency($row2['rate'] * $row2['hours'], "USD"); ?>
+                                                                <span class="flex flex-row ml-2 text-lg "> <?= $formatter->formatCurrency($row2['rate'] * $row2['minutes'] / 60, "USD"); ?>
                                                                 </span>
                                                             </span>
                                                         </span>

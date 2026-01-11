@@ -1,5 +1,5 @@
 <?php
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 $defaultrate = $_SESSION['defaultrate'];
 
 $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
@@ -8,12 +8,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $date = $_POST['date'];
     $rate = $_POST['payrate'];
     $userid = $_POST['userid'];
-    $hours = $_POST['hours'] + $_POST['minutes'] / 60;
+    $minutes = $_POST['hours']*60 + $_POST['minutes'] ;
     $ppid = $_POST['periodID'] ?? '';
 
     include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-    $sql = $con->prepare("INSERT INTO `shifts` (`date`, `rate`, `userid`, `hours`, `ppid`) VALUES (?, ?, ?, ?, ?)");
-    $sql->bind_param("sssss", $date, $rate, $userid, $hours, $ppid);
+    $sql = $con->prepare("INSERT INTO `shifts` (`date`, `rate`, `userid`, `minutes`, `ppid`) VALUES (?, ?, ?, ?, ?)");
+    $sql->bind_param("sssss", $date, $rate, $userid, $minutes, $ppid);
     $sql->execute();
     header("Location: ../");
 

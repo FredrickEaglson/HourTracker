@@ -1,5 +1,5 @@
 <?php 
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $id = $_GET['id'];
     include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";

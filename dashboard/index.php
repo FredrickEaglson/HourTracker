@@ -1,7 +1,7 @@
 <?php
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 $_SESSION['profileIMG'] = "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&amp;fit=crop&amp;q=80&amp;w=1160";
-
+include $_SERVER['DOCUMENT_ROOT'] . "/app/functions.php";
 
 
 
@@ -25,10 +25,27 @@ $sql2->execute();
 $numshifts = $sql2->get_result()->num_rows;
 
 $sql3 = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? ORDER BY DATE DESC  LIMIT 8 OFFSET ?; ");
-$page = (intval($_GET['spage']??1) - 1 ) * 8 ?? 8;
+$page = (intval($_GET['spage'] ?? 1) - 1) * 8 ?? 8;
 $sql3->bind_param("si", $_SESSION['userid'], $page);
 $sql3->execute();
-$shifts=$sql3->get_result();
+$shifts = $sql3->get_result();
+
+//hours in the current payperiod
+$curpp = getcurpp();
+$sqlcppshifts = $con->prepare("SELECT * FROM `shifts` WHERE `ppid`=? ORDER BY `date` ASC");
+$sqlcppshifts->bind_param("s", $curpp);
+$sqlcppshifts->execute();
+$cppshifts = $sqlcppshifts->get_result();
+$curppsql = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=? AND `ppid`=?");
+$curppsql->bind_param("ss", $_SESSION['userid'], $curpp);
+$curppsql->execute();
+$curpprate = $curppsql->get_result()->fetch_assoc()['rate'];
+
+$minutes = $money = 0;
+foreach ($cppshifts as $shift) {
+    $minutes += $shift['minutes'];
+}
+
 
 
 
@@ -42,10 +59,10 @@ $shifts=$sql3->get_result();
 
 <body class="w-screen">
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
-    
+
     <main class="m-3 p-3 grid grid-cols-2 gap-2">
-        
-        
+
+
 
         <section class="p-4 border-[3px] rounded-3xl border-black border-solid flex flex-col">
             <div class="flex flex-col justify-center items-center ">
@@ -124,40 +141,39 @@ $shifts=$sql3->get_result();
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach($shifts as $shift): ?>
+                            <?php foreach ($shifts as $shift): ?>
 
                                 <tr class="border border-black border-solid">
                                     <td class="border border-black border-solid"><?= $shift['date'] ?></td>
-                                    <td class="border border-black border-solid"><?= round($shift['hours'],2) ?></td>
+                                    <td class="border border-black border-solid"><?= round($shift['minutes'] / 60, 2) ?></td>
                                     <td class="border border-black border-solid"><?= $shift['rate'] ?></td>
-                                    <td class="border border-black border-solid"><?= round($shift['rate'] * $shift['hours'],2)?></td>
+                                    <td class="border border-black border-solid"><?= round($shift['rate'] * $shift['minutes'] / 60, 2) ?></td>
                                 </tr>
 
-                            <?php endforeach; 
-                        
+                            <?php endforeach;
+
                             ?>
                         </tbody>
                     </table>
                     <div aria-label="shift pagination controls" class=" text-center">
                         <?php
-                        if (isset($_GET['spage'])&& $_GET['spage'] > 1) {
+                        if (isset($_GET['spage']) && $_GET['spage'] > 1) {
                             echo "<a class='text-center ml-2 text-teal-900' href='./?spage=" . ($_GET['spage'] - 1) . "'>&lt; Previous  </a>";
-                        } 
-                        if (isset($_GET['spage'])&& $_GET['spage']< intdiv($numshifts , 8 )+1) {
+                        }
+                        if (isset($_GET['spage']) && $_GET['spage'] < intdiv($numshifts, 8) + 1) {
                             echo "<a class='text-center mr-2 text-teal-900' href='./?spage=" . ($_GET['spage'] + 1) . "'>  Next &gt;</a>";
                         } else if (!isset($_GET['spage'])) {
-                             echo "<a class='text-center mr-2 text-teal-900' href='./?spage=2'>Next &gt;</a>";
-                            
+                            echo "<a class='text-center mr-2 text-teal-900' href='./?spage=2'>Next &gt;</a>";
                         }
                         ?>
                     </div>
-                    <p class="text-center">Showing page <?= $_GET['spage']??1 ?> of <?= intdiv($numshifts , 8 )+1?></p>
+                    <p class="text-center">Showing page <?= $_GET['spage'] ?? 1 ?> of <?= intdiv($numshifts, 8) + 1 ?></p>
 
                 </div>
             </div>
             </div>
         </section>
-    
+
     </main>
 
 

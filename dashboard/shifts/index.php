@@ -1,5 +1,6 @@
 <?php
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
+
 
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 
@@ -28,7 +29,7 @@ function formatmins($mins)
 
 </head>
 
-<body class="w-screen">
+<body class="w-full">
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
     <main>
         <section class="place-content-center">
@@ -59,7 +60,13 @@ function formatmins($mins)
                     <li>
                         <div
                             
-                            class="flex flex-col justify-center items-center p-3 m-4 border border-black text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
+                            class="flex flex-col justify-center items-center p-3 m-4 border';
+                            if ($row2['worked'] == FALSE){
+                                echo " border-yellow-600 ";
+                            } else {
+                                echo " border-black ";
+                            }
+                            echo 'text-lg text-inherit rounded-4xl border-4 border-black shadow-2xl min-w-[30rem]">
                             
                             <span class="flex flex-row w-full justify-between ">
                                 <h3
@@ -69,14 +76,14 @@ function formatmins($mins)
                                         echo '
                                 </h3>
                                 <span class="flex flex-row align-bottom text-lg">
-                                    <span class="flex flex-row mr-2 text-lg ">' . floor($row2['hours']) . ':' . formatmins(floor(($row2['hours'] - floor($row2['hours'])) * 60));
+                                    <span class="flex flex-row mr-2 text-lg ">' . floor($row2['minutes']/60) . ':' . formatmins(floor($row2['minutes']%60));
                                         echo '</span>
                                     <span class="flex flex-row text-red-700 text-lg ">';
                                         if (isset($row2['rate'])) {
                                             echo $formatter->formatCurrency($row2['rate'], "USD");
                                         }
                                         echo '</span>  
-                            <span class="flex flex-row ml-2 text-lg ">' . $formatter->formatCurrency($row2['rate'] * $row2['hours'], "USD");
+                            <span class="flex flex-row ml-2 text-lg ">' . $formatter->formatCurrency($row2['rate'] * $row2['minutes']/60, "USD");
                                         echo '</span> 
                                 </span>
                             </span>

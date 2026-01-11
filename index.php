@@ -28,6 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['prefferedName'] = $row['prefferedName'];
             $_SESSION['tempshifts'] = ["x"];
             $_SESSION['defaultrate']=$row['defaultrate'];
+            $_SESSION['expire']=time()+60*60*24*3;
+
+
             header("Location: dashboard");
         }
     }

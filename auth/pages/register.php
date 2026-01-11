@@ -1,5 +1,5 @@
 <?php
-include "dbcon.php";
+include $_SERVER['DOCUMENT_ROOT']. "/auth/dbcon.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     function validatePasswordStrength($password)

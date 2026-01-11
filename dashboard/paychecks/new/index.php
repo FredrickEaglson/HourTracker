@@ -1,5 +1,5 @@
 <?php
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 $defaultrate = 0.0;
 
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
@@ -24,20 +24,19 @@ $row1;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $ppid = $_POST['payperiod'];
-    $hours = $_POST['hours']+$_POST['minutes']/60;
+    $hours = $_POST['hours'] + $_POST['minutes'] / 60;
     $tips = $_POST['tips'];
     $tax = $_POST['tax'];
     $deductions = $_POST['deductions'];
-    $pretax=$_POST['pretax'];
-    $posttax=$_POST['posttax'];
+    $pretax = $_POST['pretax'];
+    $posttax = $_POST['posttax'];
 
-    $rate=$_POST['payrate'];
+    $rate = $_POST['payrate'];
 
     $sql3 = $con->prepare("INSERT INTO `paychecks` (`userid`, `ppid`, `hours`,  `tips`, `taxes`, `deductions`, `hourly`, `net`, `rate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $sql3->bind_param("ssddddddd", $_SESSION['userid'], $ppid, $hours, $tips, $tax, $deductions, $pretax, $posttax, $rate);
     $sql3->execute();
     header("Location: ../");
-
 }
 
 
@@ -80,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid mb-4">
-                                <button id="b_find">Find</button>
+                                <button type="button" id="b_find">Find</button>
 
                             </div>
                         </div>
@@ -102,15 +101,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Date</label>
-                                <input type="date" class="max-w-full" name="date" required>
+                                <input type="date" id="date" class="max-w-full" name="date" required>
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Hours</label>
-                                <input type="number" class="max-w-full" name="hours" step="0.000001" required value="0">
+                                <input type="number" id="hours" class="max-w-full" name="hours" step="0.000001" required value="0">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Minutes</label>
-                                <input type="number" class="max-w-full" name="minutes" step="1" required value="0">
+                                <input type="number" id="minutes" class="max-w-full" name="minutes" step="1" required value="0">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Tips</label>
@@ -125,12 +124,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label for="periodID">Deductions</label>
                                 <input type="number" class="max-w-full" name="deductions" step="0.01" required value="0">
                             </div>
-                            
+
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Pretax Total</label>
                                 <input type="number" class="max-w-full" name="pretax" step="0.01" required value="0">
                             </div>
-                            
+
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Post Tax Total</label>
                                 <input type="number" class="max-w-full" name="posttax" step="0.01" required value="0">
@@ -167,6 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             echo "<input type='hidden' name='shifts[]' value=''>";
                                         }
 
+
                                         ?>
                                     </tbody>
 
@@ -181,7 +181,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     <script>
+        document.getElementById("b_find").addEventListener("click", function(e) {
+            e.preventDefault();
 
+            var _ppid = document.getElementById("s_ppid").value;
+
+
+
+            var _url = "<?= htmlspecialchars($_SERVER['SRVROOT']) ?>/auth/db.php?r=ppfind&ppid=" + _ppid + "&userid=<?= htmlspecialchars($_SESSION['userid']) ?>";
+            var XHttp = new XMLHttpRequest();
+            var _json = {};
+            XHttp.open("GET", _url, true);
+            XHttp.send();
+            XHttp.
+
+
+            document.getElementById("date").value = _json.date;
+            document.getElementById("hours").value = Math.floor(_json.minutes / 60);
+            document.getElementById("minutes").value = _json.minutes % 60;
+
+        });
     </script>
 </body>
 

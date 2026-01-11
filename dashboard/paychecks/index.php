@@ -1,5 +1,5 @@
 <?php
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 $sql = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=?");

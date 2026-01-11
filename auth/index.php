@@ -1,5 +1,5 @@
 <?php 
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 
 if (!isset($_SESSION['user']) && $_SESSION['loggedin'] != true) {
     header("Location: dashboard/index.php");
@@ -7,10 +7,10 @@ if (!isset($_SESSION['user']) && $_SESSION['loggedin'] != true) {
 
 switch ($_GET['r']) {
     case 'reg':
-        include "./pages/register.php";
+        header("Location: pages/register.php");
         
         break;
     default:
-        header("Location: login.php");
+        header("Location: /");
 }
 

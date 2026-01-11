@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 
@@ -17,8 +17,8 @@ $result = $sql->get_result();
 
 while ($row = $result->fetch_assoc()) {
     echo $row['uuid'];
-    $totalhours += $row['hours'];
-    $totalmoney += ($row['rate'] * $row['hours']);
+    $totalhours += $row['minutes']/60;
+    $totalmoney += ($row['rate'] * $row['minutes']/60);
     $shiftids .= ',' . $row['uuid'];
     $shifts++;
 }

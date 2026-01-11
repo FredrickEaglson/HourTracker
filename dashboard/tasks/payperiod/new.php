@@ -1,32 +1,8 @@
 <?php
+
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
-$defaultrate = 0.0;
+include $_SERVER['DOCUMENT_ROOT'] . "/app/types/tasks.php";
 
-include "../../..//auth/dbcon.php";
-$sql = $con->prepare("SELECT `defaultrate` FROM `accounts` WHERE `userid`=?");
-$sql->bind_param("s", $_SESSION['userid']);
-$sql->execute();
-$result = $sql->get_result();
-$row = $result->fetch_assoc();
-$defaultrate = $row['defaultrate'];
-
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['name'] ?? null;
-    $startdate = $_POST['startdate'];
-    $enddate = $_POST['enddate'];
-    $payrate = $_POST['payrate'] ?? $defaultrate;
-    $userid = $_POST['userid'] ?? $_SESSION['userid'];
-    $shifts = join(',', $_POST['shifts']) ?? null;
-
-    $sql = $con->prepare("INSERT INTO `payperiods` (`name`, `startdate`, `enddate`, `rate`, `userid`,`shift_ids`) VALUES (?, ?, ?, ?, ?,?)");
-    $sql->bind_param("sssdss", $name, $startdate, $enddate, $payrate, $userid, $shifts);
-    $result = $sql->execute();
-    if ($result) {
-        header("Location: ../");
-    }
-}
 ?>
 
 <!DOCTYPE html>

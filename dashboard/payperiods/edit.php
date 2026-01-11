@@ -1,5 +1,5 @@
 <?php
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
@@ -153,16 +153,16 @@ function formatmins($mins)
 
                                                             </h3>
                                                             <span class="flex flex-row align-bottom text-lg">
-                                                                <span class="flex flex-row mr-2 text-lg "> <?= floor($row2['hours']) . ':' . formatmins(floor(($row2['hours'] - floor($row2['hours'])) * 60)) ?>
+                                                                <span class="flex flex-row mr-2 text-lg "> <?= floor($row2['minutes']/60) . ':' . formatmins($row2['minutes']%60); ?>
                                                                 </span>
                                                                 <span class="flex flex-row text-red-700 text-lg "><?= $formatter->formatCurrency($row2['rate'], "USD") ?>
                                                                 </span>
-                                                                <span class="flex flex-row ml-2 text-lg "> <?= $formatter->formatCurrency($row2['rate'] * $row2['hours'], "USD"); ?>
+                                                                <span class="flex flex-row ml-2 text-lg "> <?= $formatter->formatCurrency($row2['rate'] * $row2['minutes']/60, "USD"); ?>
                                                                 </span>
                                                             </span>
                                                         </span>
                                                         <span>
-                                                            <a class="text-red-500 underline" href="./deallocate.php?id=' . $row2['uuid'] . '&ppid=' . $ppid . '&r=/dashboard/payperiods/edit.php?id=' . $ppid . '?Deallocate">Deallocate</a>
+                                                            <a class="text-red-500 underline" href="./deallocate.php?id=<?=$row2['uuid']?>&ppid=<?= $ppid ?>&r=/dashboard/payperiods/edit.php?id=<?= $ppid ?>">Deallocate</a>
                                                         </span>
                                                     </div>
                                                 </li>

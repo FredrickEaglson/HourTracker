@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 
 include $_SERVER['DOCUMENT_ROOT'] . '/auth/db.php';
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -50,6 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $result = $sql->get_result();
         echo $sql->error;
         echo $result;
-        header("Location: /dashboard/payperiods/update.php?id=" . $payperiodid . "&r=./edit.php?id=" . $payperiodid);
+        header("Location: /dashboard/payperiods/update.php?id=" . $payperiodid . "&r=/dashboard/payperiods/edit.php?id=" . $payperiodid);
     }
 }
