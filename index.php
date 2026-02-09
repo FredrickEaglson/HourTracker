@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['tempshifts'] = ["x"];
             $_SESSION['defaultrate']=$row['defaultrate'];
             $_SESSION['expire']=time()+60*60*24*3;
+            $_SESSION['csvname']=$row['csvname'];
 
 
             header("Location: dashboard");

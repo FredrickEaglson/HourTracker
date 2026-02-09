@@ -33,8 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $rate = $_POST['payrate'];
 
-    $sql3 = $con->prepare("INSERT INTO `paychecks` (`userid`, `ppid`, `hours`,  `tips`, `taxes`, `deductions`, `hourly`, `net`, `rate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $sql3->bind_param("ssddddddd", $_SESSION['userid'], $ppid, $hours, $tips, $tax, $deductions, $pretax, $posttax, $rate);
+    $total = $hours * $rate + $_POST['othours'] * $_POST['otrate'] + $tips - $deductions - $tax;
+
+    $sql3 = $con->prepare("INSERT INTO `paychecks` (`userid`, `ppid`, `hours`,  `tips`, `taxes`, `deductions`, `hourly`, `net`, `rate`,`othours`,`otrate`,`totalmoney`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)");
+    $sql3->bind_param("ssdddddddddd", $_SESSION['userid'], $ppid, $hours, $tips, $tax, $deductions, $pretax, $posttax, $rate, $_POST['othours'], $_POST['otrate'], $total);
     $sql3->execute();
     header("Location: ../");
 }
@@ -110,6 +112,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Minutes</label>
                                 <input type="number" id="minutes" class="max-w-full" name="minutes" step="1" required value="0">
+                            </div>
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                <label for="periodID">Overtime Hours</label>
+                                <input type="number" id="othours" class="max-w-full" name="othours" step="0.000001" required value="0">
+                            </div>
+                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                <label for="periodID">Overtime Rate</label>
+                                <input type="number" id="otrate" class="max-w-full" name="otrate" step="0.000001" required value="0">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Tips</label>

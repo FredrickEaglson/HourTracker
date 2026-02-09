@@ -106,7 +106,7 @@ function formatmins($mins)
                                 <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
                             </div>
                             <div class="col-span-3">
-                                <div class="grid grid-cols-4 gap-4">
+                                <div class="grid grid-cols-5 gap-4">
                                     <div class="p-2 sm:p-auto bg-slate-200 rounded border1 h-full">
                                         <button type="submit" class="w-full h-full">Update</button>
                                     </div>
@@ -115,6 +115,9 @@ function formatmins($mins)
                                     </div>
                                     <div class="p-2 sm:p-auto bg-slate-200 rounded border1 h-full text-center">
                                         <a class="w-full h-full text-center" href="./update.php?id=<?php echo $row['ppid'] . "&r=" . $_SERVER['REQUEST_URI']; ?>">Update Hours</a>
+                                    </div>
+                                    <div class="p-2 sm:p-auto bg-slate-200 rounded border1 h-full text-center">
+                                        <a class="w-full h-full text-center" href="./fromcsv.php?id=<?php echo $row['ppid'] . "&r=" . $_SERVER['REQUEST_URI']; ?>">Import File</a>
                                     </div>
                                     <div class="p-2 sm:p-auto  rounded border1 h-full text-center bg-red-100">
                                         <a class="w-full h-full text-center text-red-700 " href="./delete.php?a=0&id=<?php echo $row['ppid'] . "&r=index.php"; ?>">Delete Payperiod</a>

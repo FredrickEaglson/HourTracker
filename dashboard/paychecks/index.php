@@ -34,7 +34,7 @@ $result = $sql->get_result();
                     <?php
                     $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
                     include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-                    $sql = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=?");
+                    $sql = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=? ORDER BY `date` DESC");
                     $sql->bind_param("s", $_SESSION['userid']);
                     $sql->execute();
                     $result = $sql->get_result();
@@ -78,9 +78,15 @@ $result = $sql->get_result();
                                             <div class="text-red-700">
                                                 <?= $row['realrate'] ?>
                                             </div>
+                                            <?php if ($row['othours']>0): ?>
                                             <div>
+                                                <?= $row['totalmoney'] ?>
+                                            </div>
+                                            <?php else: ?>
+                                                <div>
                                                 <?= $row['net'] ?>
                                             </div>
+                                            <?php endif;?>
                                         </div>
                                     </div>
 

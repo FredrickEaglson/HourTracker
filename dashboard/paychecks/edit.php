@@ -122,20 +122,48 @@ function formatmins($mins)
                                     </div>
                                 </div>
                             </div>
+                            <?php if ($row['othours'] == 0): ?>
+                                <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                    <label for="periodID">Net</label>
+                                    <input type="text" class="max-w-full" name="net" readonly value="<?php echo $formatter->formatCurrency($row['net'], "USD"); ?>">
+                                </div>
+                                <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                    <label for="periodID">Real Rate</label>
+                                    <input type="text" class="max-w-full" name="realrate" readonly value="<?php echo $formatter->formatCurrency($row['realrate'], "USD"); ?>">
+                                </div>
+                                <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                    <label for="periodID">Tips Rate</label>
+                                    <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $formatter->formatCurrency(($row['tips'] * (($row['net'] + $row['deductions']) / ($row['tips'] + $row['hourly']))) / $row['hours'], "USD"); ?>">
+                                </div>
+                            <?php else: ?>
 
-                            <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                <label for="periodID">Net</label>
-                                <input type="text" class="max-w-full" name="net" readonly value="<?php echo $formatter->formatCurrency($row['net'], "USD"); ?>">
-                            </div>
-                            <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                <label for="periodID">Real Rate</label>
-                                <input type="text" class="max-w-full" name="realrate" readonly value="<?php echo $formatter->formatCurrency($row['realrate'], "USD"); ?>">
-                            </div>
-                            <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                <label for="periodID">Tips Rate</label>
-                                <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $formatter->formatCurrency(($row['tips'] * (($row['net'] + $row['deductions']) / ($row['tips'] + $row['hourly']))) / $row['hours'], "USD"); ?>">
-                            </div>
-
+                                
+                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                        <label for="periodID">Over Time Hours</label>
+                                        <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $row['othours']; ?>">
+                                    </div>
+                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                        <label for="periodID">Over Time Rate</label>
+                                        <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $row['otrate']; ?>">
+                                    </div>
+                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                        <label for="periodID">OT Hourly</label>
+                                        <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $row['otrate']*$row['othours']; ?>">
+                                    </div>
+                               
+                                <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                    <label for="periodID">Net</label>
+                                    <input type="text" class="max-w-full" name="net" readonly value="<?php echo $formatter->formatCurrency($row['totalmoney'], "USD"); ?>">
+                                </div>
+                                <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                    <label for="periodID">Real Rate</label>
+                                    <input type="text" class="max-w-full" name="realrate" readonly value="<?php echo $formatter->formatCurrency($row['totalmoney'] / ($row['othours'] + $row['hours']), "USD"); ?>">
+                                </div>
+                                <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                    <label for="periodID">Tips Rate</label>
+                                    <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $formatter->formatCurrency($row['tips'] / ($row['othours'] + $row['hours']), "USD"); ?>">
+                                </div>
+                            <?php endif ?>
                             <div class="p-2 bg-slate-200 rounded border1 h-full">
                                 <button type="submit" class="w-full h-full">Update</button>
                             </div>
@@ -182,7 +210,7 @@ function formatmins($mins)
                                                                 </span>
                                                             </span>
                                                         </span>
-                                                        
+
                                                     </div>
                                                 </li>
                                             </a>

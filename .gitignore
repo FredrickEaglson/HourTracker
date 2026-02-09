@@ -7,3 +7,4 @@ auth/db*
 *.code-workspace
 WorkOS/*
 vendor/*
+catalog

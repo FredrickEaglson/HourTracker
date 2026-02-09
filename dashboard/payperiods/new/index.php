@@ -75,6 +75,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="p-2 bg-slate-200 rounded border1">
                                 <button type="submit" class="w-full">Insert</button>
                             </div>
+                            <div class="p-2 bg-slate-200 rounded border1">
+                                <a href="<?= $_SERVER['SRVROOT']?>/dashboard/payperiods/new/uselast" class="w-full">Use Last</a>
+                            </div>
                         </div>
 
                         <div class="flex flex-col justify-center items-center p-3 m-4">
