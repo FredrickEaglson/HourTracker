@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-
+include "app/webstatistics.php";
 
 if (isset($_SESSION['userid']) && $_SESSION['loggedin'] == true) {
     header("Location: http://localhost/dashboard/index.php");
@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['defaultrate']=$row['defaultrate'];
             $_SESSION['expire']=time()+60*60*24*3;
             $_SESSION['csvname']=$row['csvname'];
+            $_SESSION['role']=$row['account_type'];
 
 
             header("Location: dashboard");

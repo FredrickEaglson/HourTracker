@@ -4,12 +4,12 @@ $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
 $ppid = '';
-include "../..//auth/dbcon.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 
 $id = $_GET['id'];
 
-$sql = $con->prepare("SELECT * FROM `payperiods` WHERE `ppid`=? && `userid`=?");
-$sql->bind_param("ss", $id, $_SESSION['userid']);
+$sql = $con->prepare("SELECT * FROM `payperiods` WHERE `ppid`=?");
+$sql->bind_param("s", $id);
 $sql->execute();
 $result = $sql->get_result();
 $row = $result->fetch_assoc();
@@ -60,7 +60,7 @@ function formatmins($mins)
 </head>
 
 <body class="w-full">
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/admin.header.php"; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
     <main>
         <section class="place-content-center">
             <div class="flex flex-col justify-center items-center p-3 m-4 border-solid rounded-4xl  border-4 border-black shadow-2xl">

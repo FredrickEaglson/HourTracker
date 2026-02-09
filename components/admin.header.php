@@ -12,31 +12,37 @@
                 <nav aria-label="Global" class="hidden md:block">
                     <ul class="flex items-center gap-6 text-sm">
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/shifts"> Shifts </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/admin/shifts"> Shifts </a>
                         </li>
 
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/payperiods"> Payperiods </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/admin/payperiods"> Payperiods </a>
                         </li>
 
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/paychecks"> Paychecks </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/admin/paychecks"> Paychecks </a>
                         </li>
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/tasks"> Tasks </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?php echo $_SERVER['SRVROOT']; ?>/admin/tasks"> Tasks </a>
                         </li>
 
 
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT']."/logout.php" ?>"> Logout </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT'] . "/logout.php" ?>"> Logout </a>
                         </li>
-                        <?php if ($_SESSION['role']=="admin") : ?>
+                        <?php if ($_SESSION['role'] == "admin") : ?>
+                            <li>
+                                <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT'] . "/admin/users" ?>"> Users </a>
+                            </li>
+                            <li>
+                                <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT'] . "/admin/webstatistics.php" ?>"> WebSatistics </a>
+                            </li>
+                            <li>
+                                <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT'] . "/admin" ?>"> Admin Portal </a>
+                            </li>
+                        <?php endif; ?>
                         <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT']."/admin" ?>"> Admin Portal </a>
-                        </li>
-                        <?php endif;?>
-                        <li>
-                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT']."/settings" ?>"> Settings </a>
+                            <a class="text-gray-500 transition hover:text-gray-500/75" href="<?= $_SERVER['SRVROOT'] . "/settings" ?>"> Settings </a>
                         </li>
                     </ul>
                 </nav>

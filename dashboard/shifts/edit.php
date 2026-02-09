@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     $minutes = $_POST['hours'] * 60 + $_POST['minutes'];
-    
+
 
     if ($_POST['workedcb'] == "1") {
         $worked = 1;
@@ -127,6 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                 </select>
                             </div>
+                            
                             <div class="p-2 bg-slate-200 rounded border1 h-full">
                                 <button type="submit" class="w-full h-full">Update</button>
                             </div>

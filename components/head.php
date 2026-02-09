@@ -1,5 +1,5 @@
 <?php
-
+include $_SERVER['DOCUMENT_ROOT'] . "/app/webanalytics.php";
 ?>
 
 
@@ -12,3 +12,5 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<script data-host="https://phpanalytics.lunatio.com" src="https://phpanalytics.lunatio.com/js/script.js" id="ZwSg9rf6GA" async defer></script>
+<script src="../app/wa.js"></script>
