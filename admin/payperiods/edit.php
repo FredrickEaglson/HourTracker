@@ -87,7 +87,7 @@ function formatmins($mins)
                             </div>
                             <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="userid">User ID</label>
-                                <input type="text" class="max-w-full" name="userid" readonly value="<?php echo $row['userid']; ?>">
+                                <input type="text" class="max-w-full" name="userid" value="<?php echo $row['userid']; ?>">
                             </div>
                             <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Pay Period ID</label>
@@ -95,7 +95,7 @@ function formatmins($mins)
                             </div>
                             <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="shifts">Shifts</label>
-                                <input type="text" class="max-w-full" name="shifts" readonly value="<?php echo $row['shifts']; ?>">
+                                <input type="text" class="max-w-full" name="shifts" value="<?php echo $row['shifts']; ?>">
                             </div>
                             <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Total Time</label>
@@ -104,6 +104,17 @@ function formatmins($mins)
                             <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Before Tax</label>
                                 <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
+                            </div>
+                            <div class="bg-yellow-100 rounded border-3 border-yellow-900 col-span-3 padding-3">
+                                <div class="text-lg text-center w-full">
+                                    <h3 class="text-lg ">Admin Panel</h3>
+                                </div>
+                                
+                                    <div class="p-2 sm:p-auto  rounded border border-yellow-500 border-solid">
+                                        <p>Status</p>
+                                        <textarea class="w-full" value="<?= $row['status']??"" ?> "></textarea>
+                                    </div>
+                                
                             </div>
                             <div class="col-span-3">
                                 <div class="grid grid-cols-5 gap-4">
@@ -156,16 +167,16 @@ function formatmins($mins)
 
                                                             </h3>
                                                             <span class="flex flex-row align-bottom text-lg">
-                                                                <span class="flex flex-row mr-2 text-lg "> <?= floor($row2['minutes']/60) . ':' . formatmins($row2['minutes']%60); ?>
+                                                                <span class="flex flex-row mr-2 text-lg "> <?= floor($row2['minutes'] / 60) . ':' . formatmins($row2['minutes'] % 60); ?>
                                                                 </span>
                                                                 <span class="flex flex-row text-red-700 text-lg "><?= $formatter->formatCurrency($row2['rate'], "USD") ?>
                                                                 </span>
-                                                                <span class="flex flex-row ml-2 text-lg "> <?= $formatter->formatCurrency($row2['rate'] * $row2['minutes']/60, "USD"); ?>
+                                                                <span class="flex flex-row ml-2 text-lg "> <?= $formatter->formatCurrency($row2['rate'] * $row2['minutes'] / 60, "USD"); ?>
                                                                 </span>
                                                             </span>
                                                         </span>
                                                         <span>
-                                                            <a class="text-red-500 underline" href="./deallocate.php?id=<?=$row2['uuid']?>&ppid=<?= $ppid ?>&r=/dashboard/payperiods/edit.php?id=<?= $ppid ?>">Deallocate</a>
+                                                            <a class="text-red-500 underline" href="./deallocate.php?id=<?= $row2['uuid'] ?>&ppid=<?= $ppid ?>&r=/dashboard/payperiods/edit.php?id=<?= $ppid ?>">Deallocate</a>
                                                         </span>
                                                     </div>
                                                 </li>

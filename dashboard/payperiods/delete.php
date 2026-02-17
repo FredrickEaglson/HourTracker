@@ -39,10 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql2->execute();
         $result2 = $sql2->get_result();
 
-        $sql1 = $con->prepare("DELETE FROM `payperiods` WHERE `ppid`=?");
-        $sql1->bind_param("s", $row['ppid']);
-        $sql1->execute();
-        $result = $sql1->get_result();
+        $sql2 = $con->prepare("UPDATE `payperiods` SET `status`='DELETED' WHERE `ppid`=?");
 
 
 

@@ -1,5 +1,7 @@
 <?php
 include $_SERVER['DOCUMENT_ROOT'] . "/app/webanalytics.php";
+
+include $_SERVER['DOCUMENT_ROOT'] . "/app/constants.php";
 ?>
 
 

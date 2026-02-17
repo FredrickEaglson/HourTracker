@@ -199,6 +199,7 @@ ksort($last_visitors_by_daytime);
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <a class="navbar-brand" href="#">WebAnalytics</a>
+            <a class="navbar-brand" href="index">HourTracker</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

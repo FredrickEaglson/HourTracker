@@ -577,7 +577,7 @@ class web_analytics {
     // Construct: web_analytics({db_manager}, $_SERVER, $_COOKIE)
     // If you don't want to anonymize ip addresses: web_analytics({db_manager}, $_SERVER, $_COOKIE, FALSE)
     // Please remember to write a privacy policy especially if you don't anonymize ip addresses and live in the EU.
-    function __construct(web_db_manager $db_manager, $server, $cookies, $anonymize_ip = TRUE) {
+    function __construct(web_db_manager $db_manager, $server, $cookies, $anonymize_ip = false) {
         if($db_manager->connected) {
             $this->db_manager = $db_manager;
             $this->s = $server;
