@@ -28,58 +28,21 @@ $sql2->bind_param("ss", $row['ppid'], $_SESSION['userid']);
 $sql2->execute();
 $ppinfo = $sql2->get_result()->fetch_assoc();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    exit(10);
-}
-
-$sqlshifts['weekone'] = $con->prepare("SELECT * FROM `shifts` WHERE `ppid`=? AND `userid`=? AND `date`>=? AND `date`<=?");
-
-$weekoneend = strtotime($ppinfo['startdate']) + 6 * 24 * 60 * 60;
-$sqlshifts['weekone']->bind_param("ssss", $row['ppid'], $_SESSION['userid'], $ppinfo['startdate'], $weekoneend);
-
-$sqlshifts['weekone']->execute();
-$weekone = $sqlshifts['weekone']->get_result();
-
-echo "SELECT * FROM `shifts` WHERE `ppid`='" . $row['ppid'] . "' AND `userid`='" . $_SESSION['userid'] . "' AND `date`<='" . $ppinfo['startdate'] . "' AND `date`>='" . date("Y-m-d", $weekoneend) . "'";
-
-echo $weekone->num_rows . "<br>";
-
-$weekonearr['x-totalminutes'] = 0.0;
-foreach ($weekone as $shift) {
-
-    $weekonearr['x-totalminutes'] += $shift['minutes'];
-    echo $weekonearr['x-totalminutes'];
-}
-if ($weekonearr['x-totalminutes'] > 40 * 60) {
-    $overtime += $weekonearr['x-totalminutes'] - 40 * 60;
-}
-
-
-$sqlshifts['weektwo'] = $con->prepare("SELECT * FROM `shifts` WHERE `ppid`=? AND `userid`=? AND `date`>=? AND `date`<=?");
-$weektwostart = strtotime($ppinfo['startdate']) + 7 * 24 * 60 * 60;
-$sqlshifts['weektwo']->bind_param("ssss", $row['ppid'], $_SESSION['userid'], $weektwostart, $ppinfo['enddate']);
-$sqlshifts['weektwo']->execute();
-$weektwo = $sqlshifts['weektwo']->get_result();
-
-$weektwoarr['x-totalminutes'] = 0.0;
-foreach ($weekone as $shift) {
-    $weektwoarr['x-totalminutes'] += $shift['minutes'];
-}
-if ($weektwoarr['x-totalminutes'] > 40 * 60) {
-    $overtime += $weektwoarr['x-totalminutes'] - 40 * 60;
-}
 
 
 
 
 
-$sql3 = $con->prepare("SELECT AVG(`taxrate`) AS taxrate, AVG(`realrate`) AS realrate FROM paychecks WHERE `userid`=?");
+
+
+$sql3 = $con->prepare("SELECT AVG(`taxrate`) AS taxrate, AVG(`tips`/`hours`) AS tipsrate FROM paychecks WHERE `userid`=?");
 $sql3->bind_param("s", $_SESSION['userid']);
 
 $sql3->execute();
 $result3 = $sql3->get_result()->fetch_assoc();
 $estTaxRate = $result3['taxrate'];
-$estRealRate = $result3['realrate'];
+$estRealRate = $estTaxRate * ($result3['tipsrate'] + $row['rate']);
+
 
 
 
@@ -93,7 +56,16 @@ function formatmins($mins)
         return $mins;
     }
 }
+$recalculatedmoney=0;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+   
 
+    if (isset($_POST['othours']) && isset($_POST['otminutes']) && isset($_POST['otrate'])) {
+       $othours = $_POST['othours']+ $_POST['otminutes']/60;
+       $otrate = ($_POST['otrate']-$row['rate'])*$estTaxRate;
+       $recalculatedmoney = $othours*$otrate+$row['hours'] * $estRealRate;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -140,7 +112,7 @@ function formatmins($mins)
                             <?php endif; ?>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="payrate">Pay Rate</label>
-                                <input type="number" class="max-w-full inline border border-black border-solid" step="0.01" name="payrate" value="<?php echo $row['rate']; ?>">
+                                <input type="number" id="payrate" class="max-w-full inline border border-black border-solid" step="0.01" name="payrate" value="<?php echo $row['rate']; ?>">
                             </div>
 
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
@@ -171,7 +143,7 @@ function formatmins($mins)
 
                             <div class="p-2 bg-green-200 rounded border border-black border-solid">
                                 <label for="periodID">Est. Tax Rate</label>
-                                <input type="number" step="0.000001" class="max-w-full" name="taxes" value="<?php echo round($estTaxRate, 6); ?>">
+                                <input type="number" step="0.000001" id="esttaxrate" class="max-w-full" name="taxes" value="<?php echo round($estTaxRate, 6); ?>">
                             </div>
                             <div class="p-2 bg-green-200 rounded border border-black border-solid">
                                 <label for="periodID">Est. Real Rate</label>
@@ -182,6 +154,43 @@ function formatmins($mins)
                                 <input type="text" class="max-w-full" name="net" readonly value="<?php echo $formatter->formatCurrency($row['hours'] * $estRealRate, "USD"); ?>">
                             </div>
 
+                            <div class="col-span-3">
+                                <div class="grid grid-cols-4 gap-4">
+                                    <form action="<?= $_SEVER['PHP_SELF'] ?>">
+                                        <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                            <label for="periodID">OT Hours</label>
+                                            <input name="othours" type="number" id="othours" class="max-w-full" name="net" step="0.01" value="0">
+                                        </div>
+                                        <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                            <label for="periodID">OT Minutes</label>
+                                            <input name="otminutes" type="number" id="otminutes" class="max-w-full" name="net" step="1" value="0">
+                                        </div>
+                                        <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                            <label for="periodID">OT Rate</label>
+                                            <input name="otrate" type="number" id="otrate" class="max-w-full" name="net" step="0.01" value="0">
+                                        </div>
+                                        <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                            <button type="submit" id="otrecalc">
+                                                Re-Calculate
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <?php
+                                if ($_SERVER['REQUEST_METHOD'] == "POST"):
+                                ?>
+                                    <div class="col-span-3" id="recalculated">
+                                        <label for="recalculatedmoney">Recalculated</label>
+                                        <input type="text" readonly value="<?= $recalculatedmoney ?>" name="recalculatedmoney">
+                                    </div>
+
+                                <?php endif; ?>
+                            </div>
+
+
+
+                            </script>
 
 
 

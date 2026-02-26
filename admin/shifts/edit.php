@@ -1,9 +1,6 @@
 <?php
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
-$defaultrate = 0.0;
-$totaltime = 0;
-$totalbt = 0;
-$ppid = '';
+
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 
 $id = $_GET['id'];
@@ -17,6 +14,15 @@ $ppid = $row['ppid'] ?? "NULL";
 
 
 $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
+
+$sql = $con->prepare("SELECT * FROM `accounts`");
+$sql->execute();
+$acc = $sql->get_result();
+
+$sql = $con->prepare("SELECT * FROM `accounts` WHERE `userid`=?");
+$sql->bind_param("s", $row['userid']);
+$sql->execute();
+$curracc = $sql->get_result()->fetch_assoc();
 
 
 
@@ -75,29 +81,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="flex flex-col justify-center items-center p-3 m-4 border-solid rounded-4xl  border-4 border-black shadow-2xl">
                 <h2 class="text-center text-2xl mb-5">ADMIN | Edit Shift</h2>
                 <div class="flex flex-col justify-center items-center w-full">
-                    <form class="w-full max-w-md" method="post">
+                    <form class="w-full max-w-lg" method="post">
 
                         <div class="grid grid-cols-3 grid-rows-2 gap-4">
-
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="date">Date</label>
-                                <input type="date" class="max-w-full" name="date"  value="<?php echo date("Y-m-d", strtotime($row['date'])); ?>">
+                            <div class="col-span-3">
+                                <h3 class="text-center text-xl">Shift Info</h3>
+                                <div class="grid grid-cols-4 gap-1">
+                                    <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                        <label for="date">Date</label>
+                                        <input type="date" class="max-w-full" name="date" value="<?php echo date("Y-m-d", strtotime($row['date'])); ?>">
+                                    </div>
+                                    <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                        <label for="enddate">Clock In</label>
+                                        <input type="time" class="max-w-full" name="clockin">
+                                    </div>
+                                    <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                        <label for="enddate">Clock Out</label>
+                                        <input type="time" class="max-w-full" name="clockout">
+                                    </div>
+                                    <div class="p-2 bg-slate-200 rounded border border-black border-solid">
+                                        <label for="rate">Pay Rate</label>
+                                        <input type="number" class="max-w-full border border-black border-solid" step="0.01" name="rate" value="<?php echo $row['rate']; ?>">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="enddate">Clock In</label>
-                                <input type="time" class="max-w-full" name="clockin">
-                            </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="enddate">Clock Out</label>
-                                <input type="time" class="max-w-full" name="clockout">
-                            </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="rate">Pay Rate</label>
-                                <input type="number" class="max-w-full border border-black border-solid" step="0.01" name="rate" value="<?php echo $row['rate']; ?>">
-                            </div>
-                            <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="userid">User ID</label>
-                                <input type="text" class="max-w-full" name="userid" readonly value="<?php echo $row['userid']; ?>">
+                            <div class="p-2  bg-slate-200 rounded border border-black border-solid overflow-hidden">
+                                <label for="userid">User ID</label><br>
+                                <input name="userid" class="max-w-full text-wrap" value="<?php echo $row['userid']; ?>">
+                                <a class="text-blue-700" href="transferownership?id=<?php echo $row['uuid']; ?>">Transfer Ownership</a>
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Pay Period ID</label>
@@ -124,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                 </select>
                             </div>
-                            
+
                             <div class="p-2 bg-slate-200 rounded border1 h-full">
                                 <button type="submit" class="w-full h-full">Update</button>
                             </div>

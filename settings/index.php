@@ -27,8 +27,8 @@ $sql4->execute();
 $pcresult = $sql4->get_result();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $sql = $con->prepare("UPDATE `accounts` SET `csvname`=? WHERE `userid`=?");
-    $sql->bind_param("ss", $_POST['csvname'], $_SESSION['userid']);
+    $sql = $con->prepare("UPDATE `accounts` SET `csvname`=?, defaultrate=? WHERE `userid`=?");
+    $sql->bind_param("sds", $_POST['csvname'],$_POST['defaultrate'], $_SESSION['userid']);
     $sql->execute();
 }
 
@@ -107,7 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                     <div class="p-2 m-3 max-w-100 text-center">
                         <label class="nunito-bold" for="">Pay Period Length</label><br>
-                        <input type="number" class="max-w-full border p-1 rounded-full" name="lastname" required value="<?= $row['pplength'] ?>">
+                        <input type="number" class="max-w-full border p-1 rounded-full" name="payperiodlength" required value="<?= $row['pplength'] ?>">
+                    </div>
+                    <div class="p-2 m-3 max-w-100 text-center">
+                        <label class="nunito-bold" for="">Default Rate</label><br>
+                        <input type="number" class="max-w-full border p-1 rounded-full" step="0.01" name="defaultrate" required value="<?= $row['defaultrate'] ?>">
                     </div>
 
                 </div>

@@ -16,3 +16,4 @@ include $_SERVER['DOCUMENT_ROOT'] . "/app/constants.php";
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 <script data-host="https://phpanalytics.lunatio.com" src="https://phpanalytics.lunatio.com/js/script.js" id="ZwSg9rf6GA" async defer></script>
 <script src="../app/wa.js"></script>
+<script src="https://unpkg.com/@material-tailwind/html@3.0.0-beta.7/dist/material-tailwind.umd.min.js" defer></script>

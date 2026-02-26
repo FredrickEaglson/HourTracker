@@ -3,7 +3,9 @@ include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 $_SESSION['profileIMG'] = "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&amp;fit=crop&amp;q=80&amp;w=1160";
 include $_SERVER['DOCUMENT_ROOT'] . "/app/functions.php";
 
-
+//class lists for sections and things
+$CLASSES = array();
+$CLASSES['section'] = "p-4 border-[3px] rounded-3xl border-black border-solid flex flex-col mb-2 mt-2";
 
 function hoursMins($hours)
 {
@@ -30,21 +32,8 @@ $sql3->bind_param("si", $_SESSION['userid'], $page);
 $sql3->execute();
 $shifts = $sql3->get_result();
 
-//hours in the current payperiod
-$curpp = getcurpp();
-$sqlcppshifts = $con->prepare("SELECT * FROM `shifts` WHERE `ppid`=? ORDER BY `date` ASC");
-$sqlcppshifts->bind_param("s", $curpp);
-$sqlcppshifts->execute();
-$cppshifts = $sqlcppshifts->get_result();
-$curppsql = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=? AND `ppid`=?");
-$curppsql->bind_param("ss", $_SESSION['userid'], $curpp);
-$curppsql->execute();
-$curpprate = $curppsql->get_result()->fetch_assoc()['rate'];
 
-$minutes = $money = 0;
-foreach ($cppshifts as $shift) {
-    $minutes += $shift['minutes'];
-}
+
 
 
 
@@ -60,11 +49,21 @@ foreach ($cppshifts as $shift) {
 <body class="w-screen">
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
 
-    <main class="m-3 p-3 grid grid-cols-2 gap-2">
+    <main class="m-3 p-3 lg:grid lg:grid-cols-2 lg:gap-2">
 
 
+        <section class="<?= $CLASSES['section'] ?>">
+            <?php
+            
+                foreach ($currpp as $key=>$value) {
 
-        <section class="p-4 border-[3px] rounded-3xl border-black border-solid flex flex-col">
+                    echo $key.":".$value;
+                    echo "<br>";
+                }
+            ?>
+        </section>
+
+        <section class="<?= $CLASSES['section'] ?>">
             <div class="flex flex-col justify-center items-center ">
                 <h2 class="text-center text-lg font-bold text-teal-950 nunito-bold">Pay Periods</h2>
                 <div aria-label="Pay period controls">
@@ -117,7 +116,7 @@ foreach ($cppshifts as $shift) {
             </div>
         </section>
 
-        <section class="flex flex-col p-4 rounded-3xl border-[3px] border-solid border-black">
+        <section class="<?= $CLASSES['section'] ?>">
             <div class="flex flex-col justify-center items-center ">
                 <h2 class="text-center text-teal-950 font-bold text-lg nunito-bold">Shifts</h2>
 

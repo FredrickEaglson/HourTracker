@@ -22,19 +22,27 @@ if ($row['userid'] != $_SESSION['userid']) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $shiftids = $row['shift_ids'] . ',' . implode(',', $_POST['shifts']);
-    $sql = $con->prepare("UPDATE `payperiods` SET `name`=?, `startdate`=?, `enddate`=?, `rate`=?, `shift_ids`=? WHERE `ppid`=?");
-    $sql->bind_param("sssdss", $row['name'], $row['startdate'], $row['enddate'], $row['rate'], $shiftids, $row['ppid']);
+
+    $name = $_POST['name'];
+    $ppid = $_POST['payperiodID'];
+    $startdate = $_POST['startdate'];
+    $enddate = $_POST['enddate'];
+    $rate = $_POST['payrate'];
+
+
+    
+    $sql = $con->prepare("UPDATE `payperiods` SET `name`=?, `startdate`=?, `enddate`=?, `rate`=? WHERE `ppid`=? AND `userid`=?");
+    $sql->bind_param("sssdss", $name, $startdate, $enddate, $rate, $ppid,$_SESSION['userid']);
     $sql->execute();
     $result = $sql->get_result();
     echo $sql->error;
     echo $sql->affected_rows;
     if ($sql->affected_rows > 0) {
         header("Location: ../payperiods/update.php?id=" . $row['ppid'] . '&r=' . $_SERVER['REQUEST_URI'] . '&e=1');
-    } else {
-        echo "Error";
-        echo $sql->error;
     }
+
+
+
 }
 
 function formatmins($mins)
