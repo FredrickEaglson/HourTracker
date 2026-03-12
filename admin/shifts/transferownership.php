@@ -17,6 +17,11 @@ $accsql->execute();
 $accresult = $accsql->get_result();
 $accrow = $accresult->fetch_assoc();
 
+$allAccSql = $con->prepare("SELECT * FROM `accounts`");
+$allAccSql->execute();
+$allAccResult = $allAccSql->get_result();
+
+
 
 
 ?>
@@ -52,7 +57,9 @@ $accrow = $accresult->fetch_assoc();
                                     <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                         <label for="date">New Owner</label>
                                         <select name="newowner">
-                                            
+                                            <?php foreach ($allAccResult as $acc){ ?>
+                                                <option value="<?= $acc['userid'] ?>" <?php if ($acc['userid']==$shiftrow['userid']) { echo "selected"; } ?>><?= $acc['prefferedName'] ?> | <?= $acc['userid'] ?></option>
+                                            <?php } ?>
                                         </select>
 
                                     </div>

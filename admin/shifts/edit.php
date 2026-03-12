@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="p-2  bg-slate-200 rounded border border-black border-solid overflow-hidden">
                                 <label for="userid">User ID</label><br>
                                 <input name="userid" class="max-w-full text-wrap" value="<?php echo $row['userid']; ?>">
-                                <a class="text-blue-700" href="transferownership?id=<?php echo $row['uuid']; ?>">Transfer Ownership</a>
+                                <a class="text-blue-700" href="transferownership.php?id=<?php echo $row['uuid']; ?>">Transfer Ownership</a>
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Pay Period ID</label>

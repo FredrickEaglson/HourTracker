@@ -38,6 +38,8 @@ $shifts = $sql3->get_result();
 
 
 
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,7 +48,7 @@ $shifts = $sql3->get_result();
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/head.php"; ?>
 </head>
 
-<body class="w-screen">
+<body class="w-full">
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
 
     <main class="m-3 p-3 lg:grid lg:grid-cols-2 lg:gap-2">

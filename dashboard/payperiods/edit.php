@@ -68,7 +68,7 @@ function formatmins($mins)
 </head>
 
 <body class="w-full">
-    <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/admin.header.php"; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
     <main>
         <section class="place-content-center">
             <div class="flex flex-col justify-center items-center p-3 m-4 border-solid rounded-4xl  border-4 border-black shadow-2xl">

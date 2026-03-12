@@ -32,8 +32,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $posttax = $_POST['posttax'];
 
     $rate = $_POST['payrate'];
-
+$taxrate = (($hours*$rate+$tips-$tax)/($hours*$rate+$tips));
+    
     $total = $hours * $rate + $_POST['othours'] * $_POST['otrate'] + $tips - $deductions - $tax;
+if ($_POST['othours'] != 0 ) {
+    
+    $tipshourlyAT = $tips/$hours * $taxrate;
+    $rateAT = $rate*$taxrate;
+
+    $realrealrate = $tipshourlyAT+$rateAT;
+    $realrate = $realrealrate;
+}
+    
+
+
 
     $sql3 = $con->prepare("INSERT INTO `paychecks` (`userid`, `ppid`, `hours`,  `tips`, `taxes`, `deductions`, `hourly`, `net`, `rate`,`othours`,`otrate`,`totalmoney`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)");
     $sql3->bind_param("ssdddddddddd", $_SESSION['userid'], $ppid, $hours, $tips, $tax, $deductions, $pretax, $posttax, $rate, $_POST['othours'], $_POST['otrate'], $total);

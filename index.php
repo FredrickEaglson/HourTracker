@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include "app/webstatistics.php";
+include $_SERVER['DOCUMENT_ROOT']."/app/webanalytics.php";
 
 if (isset($_SESSION['userid']) && $_SESSION['loggedin'] == true) {
     header("Location: http://localhost/dashboard/index.php");

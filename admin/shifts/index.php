@@ -59,7 +59,7 @@ function formatmins($mins)
                                         } ?>
 
 
-                                        <a href="./edit?id=<?= $row2['uuid'] ?>">
+                                        <a href="./edit.php?id=<?= $row2['uuid'] ?>">
                                             <li>
                                                 <div
 
