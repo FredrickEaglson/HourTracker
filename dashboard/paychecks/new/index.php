@@ -86,7 +86,7 @@ if ($_POST['othours'] != 0 ) {
 
                                         <option
                                             value="<?php echo $row1['ppid']; ?>">
-                                            <?= $row1['name'] . ' — ' . date('d/m/y', strtotime($row1['startdate'])) . ' - ' . date('d/m/y', strtotime($row1['enddate']));
+                                            <?= $row1['name'] . ' — ' . date('m/d/y', strtotime($row1['startdate'])) . ' - ' . date('m/d/y', strtotime($row1['enddate']));
                                             ?> </option>
                                     <?php endforeach; ?>
                                 </select>

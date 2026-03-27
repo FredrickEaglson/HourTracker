@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <button type="submit" class="w-full h-full">Update</button>
                             </div>
                             <div class="p-2  rounded border1 h-full text-center bg-red-100">
-                                <a class="w-full h-full text-center text-red-700 " href="./delete.php?a=0&id=<?php echo $row['ppid'] . "&r=index.php"; ?>">Delete Shift</a>
+                                <a class="w-full h-full text-center text-red-700 " href="./delete.php?a=0&id=<?php echo $row['uuid'] ?>&r=index.php">Delete Shift</a>
                             </div>
                         </div>
 

@@ -22,6 +22,14 @@ $allAccSql->execute();
 $allAccResult = $allAccSql->get_result();
 
 
+//old owner
+$oldsql = $con->prepare("SELECT * FROM `accounts` WHERE `userid`=?");
+$oldsql->bind_param("s", $shiftrow['userid']);
+$oldsql->execute();
+$oldresult = $oldsql->get_result();
+$oldrow = $oldresult->fetch_assoc();
+
+$oldowner = $oldrow['prefferedName'];
 
 
 ?>
@@ -42,31 +50,38 @@ $allAccResult = $allAccSql->get_result();
         <section class="place-content-center">
             <div class="flex flex-col justify-center items-center p-3 m-4 border-solid rounded-4xl  border-4 border-black shadow-2xl">
                 <h2 class="text-center text-2xl mb-5">ADMIN | Edit Shift</h2>
+                <h3 class="text-center text-xl mb-5 text-blue-900"><a href="./index.php">Shifts</a> | <a href="edit.php?id=<?= $shiftrow['uuid'] ?>">Edit Shift</a></h3>
                 <div class="flex flex-col justify-center items-center w-full">
                     <form class="w-full max-w-lg" method="post">
 
                         <div class="grid grid-cols-3 grid-rows-2 gap-4">
                             <div class="col-span-3">
                                 <h3 class="text-center text-xl"></h3>
-                                <div class="grid grid-cols-4 gap-1">
+                                <div class="grid grid-cols-2 gap-1">
                                     <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                         <label for="date">Old Owner</label>
-                                        <input type="text" class="max-w-full" name="date" value="<?= $shiftrow['userid'] ?>">
+                                        <input type="text" class="max-w-full" name="date" value="<?= $oldowner ?>">
 
                                     </div>
                                     <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                         <label for="date">New Owner</label>
-                                        <select name="newowner">
-                                            <?php foreach ($allAccResult as $acc){ ?>
-                                                <option value="<?= $acc['userid'] ?>" <?php if ($acc['userid']==$shiftrow['userid']) { echo "selected"; } ?>><?= $acc['prefferedName'] ?> | <?= $acc['userid'] ?></option>
+                                        <select name="newowner" id="newowner">
+                                            <?php foreach ($allAccResult as $acc) {
+
+                                            ?>
+                                                <option value="<?= $acc['userid'] ?>" <?php if ($acc['userid'] == $shiftrow['userid']) {
+                                                                                            echo "selected";
+                                                                                        } ?>><?= $acc['prefferedName'] ?></option>
                                             <?php } ?>
+                                            
                                         </select>
+                                        <button class="border m-1 p-1 text-white rounded-2" style="background-color:#607D8B;" type="button" id="lookup">Lookup User</button>
 
                                     </div>
-                                    
+
                                 </div>
                             </div>
-                            
+
 
                             <div class="p-2 bg-slate-200 rounded border1 ">
                                 <button type="submit" class="w-full ">Update</button>
