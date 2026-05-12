@@ -16,6 +16,12 @@ $row = $result->fetch_assoc();
 $ppid = $row['ppid'];
 $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
 
+$accsql = $con->prepare("SELECT * FROM `accounts` WHERE `userid`=?");
+$accsql->bind_param("s", $_SESSION['userid']);
+$accsql->execute();
+$res = $accsql->get_result();
+$__role = $res->fetch_assoc()["account_type"];
+
 if ($row['userid'] != $_SESSION['userid']) {
     header("Location: ../payperiods/index.php");
     exit();
@@ -30,9 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rate = $_POST['payrate'];
 
 
-    
+
     $sql = $con->prepare("UPDATE `payperiods` SET `name`=?, `startdate`=?, `enddate`=?, `rate`=? WHERE `ppid`=? AND `userid`=?");
-    $sql->bind_param("sssdss", $name, $startdate, $enddate, $rate, $ppid,$_SESSION['userid']);
+    $sql->bind_param("sssdss", $name, $startdate, $enddate, $rate, $ppid, $_SESSION['userid']);
     $sql->execute();
     $result = $sql->get_result();
     echo $sql->error;
@@ -40,9 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($sql->affected_rows > 0) {
         header("Location: ../payperiods/update.php?id=" . $row['ppid'] . '&r=' . $_SERVER['REQUEST_URI'] . '&e=1');
     }
-
-
-
 }
 
 function formatmins($mins)
@@ -89,29 +92,40 @@ function formatmins($mins)
                                 <label for="enddate">End Date</label>
                                 <input type="date" class="max-w-full" name="enddate" required value="<?php echo date("Y-m-d", strtotime($row['enddate'])); ?>">
                             </div>
-                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
-                                <label for="payrate">Pay Rate</label>
-                                <input type="number" class="max-w-full border border-black border-solid" step="0.01" name="payrate" value="<?php echo $row['rate']; ?>">
-                            </div>
-                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
-                                <label for="userid">User ID</label>
-                                <input type="text" class="max-w-full" name="userid" readonly value="<?php echo $row['userid']; ?>">
-                            </div>
-                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
-                                <label for="periodID">Pay Period ID</label>
-                                <input type="text" class="max-w-full" name="payperiodID" readonly value="<?php echo $row['ppid']; ?>">
-                            </div>
-                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
-                                <label for="shifts">Shifts</label>
-                                <input type="text" class="max-w-full" name="shifts" readonly value="<?php echo $row['shifts']; ?>">
-                            </div>
-                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
-                                <label for="periodID">Total Time</label>
-                                <input type="text" class="max-w-full" name="hours" readonly value="<?php echo floor($row['hours']) . ':' . formatmins(floor(($row['hours'] - floor($row['hours'])) * 60)) ?>">
-                            </div>
-                            <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
-                                <label for="periodID">Before Tax</label>
-                                <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
+                            <?php if (in_array($__role, PRIVLEDGED_ROLES)): ?>
+                                <div class="col-span-3">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
+                                            <label for="userid">User ID</label>
+                                            <input type="text" class="max-w-full" name="userid" readonly value="<?php echo $row['userid']; ?>">
+                                        </div>
+                                        <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
+                                            <label for="periodID">Pay Period ID</label>
+                                            <input type="text" class="max-w-full" name="payperiodID" readonly value="<?php echo $row['ppid']; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="col-span-3 ">
+                                <div class="grid grid-cols-4 gap-3">
+                                    <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
+                                        <label for="payrate">Pay Rate</label>
+                                        <input type="number" class="max-w-full border border-black border-solid" step="0.01" name="payrate" value="<?php echo $row['rate']; ?>">
+                                    </div>
+                                    <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
+                                        <label for="shifts">Shifts</label>
+                                        <input type="text" class="max-w-full" name="shifts" readonly value="<?php echo $row['shifts']; ?>">
+                                    </div>
+                                    <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
+                                        <label for="periodID">Total Time</label>
+                                        <input type="text" class="max-w-full" name="hours" readonly value="<?php echo floor($row['hours']) . ':' . formatmins(floor(($row['hours'] - floor($row['hours'])) * 60)) ?>">
+                                    </div>
+                                    <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
+                                        <label for="periodID">Before Tax</label>
+                                        <input type="text" class="max-w-full" name="" readonly value="<?php echo $formatter->formatCurrency(($row['money'] ?? $row['rate'] * $row['hours']), "USD"); ?>">
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-span-3">
                                 <div class="grid grid-cols-5 gap-4">
@@ -164,16 +178,16 @@ function formatmins($mins)
 
                                                             </h3>
                                                             <span class="flex flex-row align-bottom text-lg">
-                                                                <span class="flex flex-row mr-2 text-lg "> <?= floor($row2['minutes']/60) . ':' . formatmins($row2['minutes']%60); ?>
+                                                                <span class="flex flex-row mr-2 text-lg "> <?= floor($row2['minutes'] / 60) . ':' . formatmins($row2['minutes'] % 60); ?>
                                                                 </span>
                                                                 <span class="flex flex-row text-red-700 text-lg "><?= $formatter->formatCurrency($row2['rate'], "USD") ?>
                                                                 </span>
-                                                                <span class="flex flex-row ml-2 text-lg "> <?= $formatter->formatCurrency($row2['rate'] * $row2['minutes']/60, "USD"); ?>
+                                                                <span class="flex flex-row ml-2 text-lg "> <?= $formatter->formatCurrency($row2['rate'] * $row2['minutes'] / 60, "USD"); ?>
                                                                 </span>
                                                             </span>
                                                         </span>
                                                         <span>
-                                                            <a class="text-red-500 underline" href="./deallocate.php?id=<?=$row2['uuid']?>&ppid=<?= $ppid ?>&r=/dashboard/payperiods/edit.php?id=<?= $ppid ?>">Deallocate</a>
+                                                            <a class="text-red-500 underline" href="./deallocate.php?id=<?= $row2['uuid'] ?>&ppid=<?= $ppid ?>&r=/dashboard/payperiods/edit.php?id=<?= $ppid ?>">Deallocate</a>
                                                         </span>
                                                     </div>
                                                 </li>

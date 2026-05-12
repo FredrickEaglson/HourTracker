@@ -5,6 +5,10 @@ include $_SERVER['DOCUMENT_ROOT'] . "/app/functions.php";
 if ($_SESSION['role'] != "admin") {
     header("Location: /");
 }
+
+
+
+
 function hoursMins($hours)
 {
     $hours = floor($hours);
@@ -18,6 +22,7 @@ $numpp = $sql6->get_result()->num_rows;
 $ppage = (intval($_GET['ppage'] ?? 1) - 1) * 5 ?? 5;
 $formatter = new NumberFormatter("en_US", NumberFormatter::CURRENCY);
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
+
 $sql = $con->prepare("SELECT * FROM `payperiods` ORDER BY `startdate` DESC LIMIT 5 OFFSET ?;");
 $sql->bind_param("i", $ppage);
 $sql->execute();

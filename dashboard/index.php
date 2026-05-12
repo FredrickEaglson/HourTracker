@@ -6,7 +6,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/app/functions.php";
 //class lists for sections and things
 $CLASSES = array();
 $CLASSES['section'] = "p-4 border-[3px] rounded-3xl border-black border-solid flex flex-col mb-2 mt-2";
-
+const h2 = "class=\"p-2 text-lg\"";
 function hoursMins($hours)
 {
     $hours = floor($hours);
@@ -32,6 +32,18 @@ $sql3->bind_param("si", $_SESSION['userid'], $page);
 $sql3->execute();
 $shifts = $sql3->get_result();
 
+$sql4 = $con->prepare("SELECT SUM(`hours`) as totalHours, SUM(`hourly`)+SUM(`tips`) as pretax, SUM(taxes) as totalTaxes, SUM(deductions) as totalDeductions, SUM(net) as totalNet FROM `paychecks` WHERE `userid`=?");
+$sql4->bind_param("s", $_SESSION['userid']);
+$sql4->execute();
+$results4 = $sql4->get_result()->fetch_assoc();
+$totalhours = $results4['totalHours'];
+
+
+
+$sql5 = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=? ORDER BY `date` DESC");
+$sql5->bind_param("s", $_SESSION['userid']);
+$sql5->execute();
+
 
 
 
@@ -46,23 +58,29 @@ $shifts = $sql3->get_result();
 
 <head>
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/head.php"; ?>
+
 </head>
 
 <body class="w-full">
+    <?php if (isset($_GET['e'])){
+
+        $errModalCode = ERRORS[$_GET['e']];
+        include $_SERVER['DOCUMENT_ROOT'] . "/components/error/modal.php";
+
+     } ?>
     <?php include $_SERVER['DOCUMENT_ROOT'] . "/components/header.php"; ?>
+    
 
     <main class="m-3 p-3 lg:grid lg:grid-cols-2 lg:gap-2">
 
 
-        <section class="<?= $CLASSES['section'] ?>">
-            <?php
-            
-                foreach ($currpp as $key=>$value) {
 
-                    echo $key.":".$value;
-                    echo "<br>";
-                }
-            ?>
+        <section class="<?= $CLASSES['section'] ?>">
+            <h2 <?= h2 ?>>Total Hours: <?= round($totalhours, 2) ?></h2>
+            <h2 <?= h2 ?>>Total Pretax: <?= round($results4['pretax'], 2) ?></h2>
+            <h2 <?= h2 ?>>Total Taxes: <?= round($results4['totalTaxes'], 2) ?></h2>
+            <h2 <?= h2 ?>>Total Deductions: <?= round($results4['totalDeductions'], 2) ?></h2>
+            <h2 <?= h2 ?>>Total Net: <?= round($results4['totalNet'], 2) ?></h2>
         </section>
 
         <section class="<?= $CLASSES['section'] ?>">
@@ -116,6 +134,7 @@ $shifts = $sql3->get_result();
                     ?>
                 </ul>
             </div>
+
         </section>
 
         <section class="<?= $CLASSES['section'] ?>">

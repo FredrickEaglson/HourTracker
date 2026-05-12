@@ -4,7 +4,7 @@ $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
 $ppid = '';
-include "../..//auth/dbcon.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 
 $id = $_GET['id'];
 
@@ -40,6 +40,70 @@ function formatmins($mins)
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $date = $_POST['date'];
+    $startdate = $_POST['startdate'];
+    $enddate = $_POST['enddate'];
+    $userid = $_POST['userid'];
+    $ppid = $_POST['payperiodID'];
+    $rate = $_POST['payrate'];
+    $hours = $_POST['hours'] + $_POST['minutes'] / 60;
+    $hourly = $rate * $hours;
+    $tips = $_POST['tips'];
+    $taxes = $_POST['taxes'];
+    $deductions = $_POST['deductions'];
+    $net = $hourly + $tips - $deductions - $taxes;
+    $othours = $_POST['othours'];
+    $realrate = $net / ($othours + $hours);
+    $tipsrate = $tips / ($othours + $hours);
+    $otrate = $_POST['otrate'];
+
+    $realhours = $_POST['realhours'];
+
+    $con->begin_transaction();
+    $sql = $con->prepare("UPDATE `paychecks` SET `date`=?, `startdate`=?, `enddate`=?, `userid`=?, `ppid`=?, `pcid`=?, `rate`=?, `hours`=?,  `hourly`=?, `tips`=?, `taxes`=?, `deductions`=?, `net`=?, `realrate`=?, `tipsrate`=?, `realhours`=?, `othours`=?, `otrate`=? WHERE `pcid`=? && `userid`=?");
+    $sql->bind_param(
+        "ssssssddddddddddddds",
+        $date,
+        $startdate,
+        $enddate,
+        $userid,
+        $ppid,
+        $pcid,
+        $rate,
+        $hours,
+        $hourly,
+        $tips,
+        $taxes,
+        $deductions,
+        $net,
+        $realrate,
+        $tipsrate,
+        $realhours,
+        $othours,
+        $otrate,
+        $pcid,
+        $userid
+    );
+    $sql->execute();
+    $con->commit();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +120,7 @@ function formatmins($mins)
     <main>
         <section class="place-content-center">
             <div class="flex flex-col justify-center items-center p-3 m-4 border-solid rounded-4xl  border-4 border-black shadow-2xl">
-                <h2 class="text-center text-2xl mb-5">Edit Pay Period</h2>
+                <h2 class="text-center text-2xl mb-5">Edit Paycheck</h2>
                 <div class="flex flex-col justify-center items-center w-full">
                     <form class="w-full max-w-md" method="post">
 
@@ -137,20 +201,20 @@ function formatmins($mins)
                                 </div>
                             <?php else: ?>
 
-                                
-                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                        <label for="periodID">Over Time Hours</label>
-                                        <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $row['othours']; ?>">
-                                    </div>
-                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                        <label for="periodID">Over Time Rate</label>
-                                        <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $row['otrate']; ?>">
-                                    </div>
-                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                        <label for="periodID">OT Hourly</label>
-                                        <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $row['otrate']*$row['othours']; ?>">
-                                    </div>
-                               
+
+                                <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                    <label for="periodID">Over Time Hours</label>
+                                    <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $row['othours']; ?>">
+                                </div>
+                                <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                    <label for="periodID">Over Time Rate</label>
+                                    <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $row['otrate']; ?>">
+                                </div>
+                                <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                    <label for="periodID">OT Hourly</label>
+                                    <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $row['otrate'] * $row['othours']; ?>">
+                                </div>
+
                                 <div class="p-2 bg-green-200 rounded border border-black border-solid">
                                     <label for="periodID">Net</label>
                                     <input type="text" class="max-w-full" name="net" readonly value="<?php echo $formatter->formatCurrency($row['totalmoney'], "USD"); ?>">
@@ -163,12 +227,33 @@ function formatmins($mins)
                                     <label for="periodID">Tips Rate</label>
                                     <input type="text" class="max-w-full" name="tipsrate" readonly value="<?php echo $formatter->formatCurrency($row['tips'] / ($row['othours'] + $row['hours']), "USD"); ?>">
                                 </div>
-                            <?php endif ?>
-                            <div class="p-2 bg-slate-200 rounded border1 h-full">
-                                <button type="submit" class="w-full h-full">Update</button>
-                            </div>
-                            <div class="p-2  rounded border1 h-full text-center bg-red-100">
-                                <a class="w-full h-full text-center text-red-700 " href="./delete.php?a=0&id=<?php echo $row['ppid'] . "&r=index.php"; ?>">Delete Pay Check</a>
+                            <?php endif; ?>
+                            <div class="col-span-3">
+                                <div class="grid grid-cols-4 gap-2">
+                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                        <label for="periodID">Real Hours</label>
+                                        <input type="number" step="0.01" class="max-w-full" name="realhours" value="<?= $row['realhours'] ?>">
+                                    </div>
+                                    <?php if ($row['realhours'] > 0) : ?>
+                                        <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                            <label for="periodID">Worked Rate</label>
+                                            <input type="text" class="max-w-full" name="realhours" readonly value="<?= $formatter->formatCurrency($row['net'] / $row['realhours'], "USD"); ?>">
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                            <label for="periodID">Worked Rate</label>
+                                            <input type="text" class="max-w-full" name="realhours" value="NA">
+                                        </div>
+
+
+                                    <?php endif; ?>
+                                    <div class="p-2 bg-slate-200 rounded border1 h-full">
+                                        <button type="submit" class="w-full h-full">Update</button>
+                                    </div>
+                                    <div class="p-2  rounded border1 h-full text-center bg-red-100">
+                                        <a class="w-full h-full text-center text-red-700 " href="./delete.php?a=0&id=<?php echo $row['ppid'] . "&r=index.php"; ?>">Delete Pay Check</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

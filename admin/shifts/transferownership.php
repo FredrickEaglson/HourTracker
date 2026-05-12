@@ -75,7 +75,7 @@ $oldowner = $oldrow['prefferedName'];
                                             <?php } ?>
                                             
                                         </select>
-                                        <button class="border m-1 p-1 text-white rounded-2" style="background-color:#607D8B;" type="button" id="lookup">Lookup User</button>
+                                        <button class="border m-1 p-1 text-white rounded-2" style="background-color:#607D8B;" id="lookup">Lookup User</button>
 
                                     </div>
 
@@ -102,7 +102,13 @@ $oldowner = $oldrow['prefferedName'];
 
 
     <script>
-
+        var lookupbutton = document.getElementById("lookup");
+        lookupbutton.addEventListener("click", function (e) {
+            e.preventDefault();
+            var newowner = document.getElementById("newowner").value;
+            console.log(newowner);
+            window.location.href="../users/find.php?id="+newowner+"&r=../shifts/transferownership.php"
+        });
     </script>
 </body>
 

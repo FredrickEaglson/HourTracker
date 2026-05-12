@@ -48,9 +48,16 @@ function formatmins($mins)
                         <div class="mb-5">
                             <ul>
                                 <?php
-                                $sql = $con->prepare("SELECT * FROM `shifts` ORDER BY `date` DESC");
+                                if (!isset($_GET['id'])) {
 
-                                $sql->execute();
+                                    $sql = $con->prepare("SELECT * FROM `shifts` ORDER BY `date` DESC");
+
+                                    $sql->execute();
+                                } else {
+                                    $sql = $con->prepare("SELECT * FROM `shifts` WHERE `userid`=? ORDER BY `date` DESC");
+                                    $sql->bind_param("s", $_GET['id']);
+                                    $sql->execute();
+                                }
                                 $result2 = $sql->get_result();
                                 if ($result2->num_rows > 0) {
                                     foreach ($result2 as $row2) :

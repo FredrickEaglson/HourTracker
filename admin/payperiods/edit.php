@@ -1,5 +1,6 @@
 <?php
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/app/functions.php";
 $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
@@ -88,10 +89,12 @@ function formatmins($mins)
                             <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="userid">User ID</label>
                                 <input type="text" class="max-w-full" name="userid" value="<?php echo $row['userid']; ?>">
+                                <a class="text-blue-600" href="./transferuser.php?id=<?= $row['ppid'] ?>">Transfer User</a>
                             </div>
                             <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Pay Period ID</label>
                                 <input type="text" class="max-w-full" name="payperiodID" readonly value="<?php echo $row['ppid']; ?>">
+                                <a class="text-blue-600" href="./updateid.php?id=<?= $row['ppid'] ?>">New ID</a>
                             </div>
                             <div class="p-2 sm:p-auto bg-slate-200 rounded border border-black border-solid">
                                 <label for="shifts">Shifts</label>
@@ -112,7 +115,7 @@ function formatmins($mins)
                                 
                                     <div class="p-2 sm:p-auto  rounded border border-yellow-500 border-solid">
                                         <p>Status</p>
-                                        <textarea class="w-full" value="<?= $row['status']??"" ?> "></textarea>
+                                        <textarea class="w-full" value="<?= status_format($row['status'])??"" ?> "></textarea>
                                     </div>
                                 
                             </div>

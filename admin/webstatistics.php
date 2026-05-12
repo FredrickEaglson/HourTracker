@@ -12,8 +12,6 @@
 /*
 # Settings
 */
-$web_analytics_db = new web_db_manager("mysql:dbname=database;host=127.0.0.1", "user", "password");
-$web_auto_run = TRUE;
 
 include $_SERVER['DOCUMENT_ROOT'] . "/app/websettings.php";
 
@@ -199,7 +197,7 @@ ksort($last_visitors_by_daytime);
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <a class="navbar-brand" href="#">WebAnalytics</a>
-            <a class="navbar-brand" href="index">HourTracker</a>
+            <a class="navbar-brand" href="index.php">HourTracker</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

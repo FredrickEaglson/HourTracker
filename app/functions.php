@@ -127,3 +127,13 @@ function submit_to_sql($filecontents, $ppid)
         }
     }
 }
+
+function status_format($status): string {
+    $out = "";
+    $statusarr = preg_split($status, ";");
+    foreach ($statusarr as $statusrow) {
+        $out .= $statusrow[0] . ":" . $statusrow[1] . ";\n";
+    }
+
+    return $out;
+}
