@@ -2,7 +2,7 @@
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
 $defaultrate = 0.0;
 
-include "../../..//auth/dbcon.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 $sql = $con->prepare("SELECT `defaultrate` FROM `accounts` WHERE `userid`=?");
 $sql->bind_param("s", $_SESSION['userid']);
 $sql->execute();

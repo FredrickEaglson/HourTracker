@@ -4,7 +4,7 @@ $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
 $ppid = '';
-include "../..//auth/dbcon.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 
 $id = $_GET['id'];
 
@@ -127,8 +127,7 @@ function formatmins($mins)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-span-3">
-                                <div class="grid grid-cols-5 gap-4">
+                           
                                     <div class="p-2 sm:p-auto bg-slate-200 rounded border1 h-full">
                                         <button type="submit" class="w-full h-full">Update</button>
                                     </div>
@@ -144,8 +143,11 @@ function formatmins($mins)
                                     <div class="p-2 sm:p-auto  rounded border1 h-full text-center bg-red-100">
                                         <a class="w-full h-full text-center text-red-700 " href="./delete.php?a=0&id=<?php echo $row['ppid'] . "&r=index.php"; ?>">Delete Payperiod</a>
                                     </div>
-                                </div>
-                            </div>
+                                    <div class="p-2 sm:p-auto  rounded border1 h-full text-center bg-green-100">
+                                        <a class="w-full h-full text-center text-black " href="../paychecks/new/?ppid=<?= $row['ppid'] ?>">Create Paycheck</a>
+                                    </div>
+                                    
+                              
                         </div>
 
                         <div class="flex flex-col justify-center items-center p-3 m-4">
