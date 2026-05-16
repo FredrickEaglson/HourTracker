@@ -2,6 +2,7 @@
 session_start();
 
 include $_SERVER['DOCUMENT_ROOT']."/app/webanalytics.php";
+include $_SERVER['DOCUMENT_ROOT']."/app/constants.php";
 
 if (isset($_SESSION['userid']) && $_SESSION['loggedin'] == true) {
     header("Location: /dashboard/index.php");
@@ -31,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['expire']=time()+60*60*24*3;
             $_SESSION['csvname']=$row['csvname'];
             $_SESSION['role']=$row['account_type'];
+            if(in_array($_SESSION['role'],PRIVLEDGED_ROLES)){$_SESSION['priv']= true;};
 
 
             header("Location: dashboard");

@@ -22,6 +22,7 @@ $sql = $con->prepare("SELECT * FROM `payperiods` WHERE `ppid`=? && `userid`=?");
 $sql->bind_param("ss", $ppid, $_SESSION['userid']);
 $sql->execute();
 $ppresult = $sql->get_result();
+
 if ($ppresult->num_rows == 0) {
     header("Location: ./manual.php?=ppnfound");
 }
@@ -44,11 +45,13 @@ $data1 = $res2->fetch_assoc();
 $pcid = $data1['pcid'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $hours = $_POST['hours']+$_POST['minutes']/60;
+    $hours = $_POST['hours'] + $_POST['minutes'] / 60;
     $sql3 = $con->prepare("UPDATE `paychecks` SET `hours`=?, `rate`=?, `tips`=?,`taxes`=?, `deductions`=? WHERE `pcid`=? AND `userid`=?");
     $sql3->bind_param("dddddss", $hours, $data1['rate'], $data1['tips'], $data1['taxes'], $data1['deductions'], $pcid, $_SESSION['userid']);
     $sql3->execute();
-    header("Location: ./step2/?pcid=".$pcid);
+    $_SESSION['ppid'] = $data1['ppid'];
+    $_SESSION['pcid'] = $pcid;
+    header("Location: ./step2/?pcid=" . $pcid);
 }
 
 
@@ -86,9 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="userid">Pay Period ID</label>
-                                <input type="text" class="max-w-full" name="ppid" readonly value="<?= $data1['ppid'] ?>">
+                                <input type="text" class="max-w-full" name="ppid" readonly value="<?= $_SESSION['ppid'] ?>">
                             </div>
-
+                            
                             <div class="p-2 bg-slate-200 col-span-2 rounded border border-black border-solid">
                                 <label class="text-lg" for="periodID">Date</label>
                                 <input type="date" id="date" class="max-w-full text-right" name="date" required>
@@ -102,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label for="periodID">Tips</label>
                                 <input type="number" class="max-w-full" name="tips" step="0.01" required value="0">
                             </div>
-                            
+
                             <div class="p-2 bg-blue-200 rounded border border-black border-solid">
                                 <label for="periodID">Hours</label>
                                 <input type="number" id="hours" class="max-w-full" name="hours" step="0.000001" required value="<?= floor($ppdata['hours']) ?>">
@@ -110,11 +113,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                             <div class="p-2 bg-blue-200 rounded border border-black border-solid">
                                 <label for="periodID">Minutes</label>
-                                <input type="number" id="minutes" class="max-w-full" name="minutes" step="1" required value="<?= ($ppdata['hours']-floor($ppdata['hours']))*60 ?>">
+                                <input type="number" id="minutes" class="max-w-full" name="minutes" step="1" required value="<?= ($ppdata['hours'] - floor($ppdata['hours'])) * 60 ?>">
                             </div>
 
 
-                            
+
                             <div class="p-2 bg-red-200 rounded border border-black border-solid">
                                 <label for="periodID">Tax</label>
                                 <input type="number" class="max-w-full" name="tax" step="0.01" required value="0">

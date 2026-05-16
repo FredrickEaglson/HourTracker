@@ -56,14 +56,14 @@ function formatmins($mins)
         return $mins;
     }
 }
-$recalculatedmoney=0;
+$recalculatedmoney = 0;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-   
+
 
     if (isset($_POST['othours']) && isset($_POST['otminutes']) && isset($_POST['otrate'])) {
-       $othours = $_POST['othours']+ $_POST['otminutes']/60;
-       $otrate = ($_POST['otrate']-$row['rate'])*$estTaxRate;
-       $recalculatedmoney = $othours*$otrate+$row['hours'] * $estRealRate;
+        $othours = $_POST['othours'] + $_POST['otminutes'] / 60;
+        $otrate = ($_POST['otrate'] - $row['rate']) * $estTaxRate;
+        $recalculatedmoney = $othours * $otrate + $row['hours'] * $estRealRate;
     }
 }
 ?>
@@ -135,28 +135,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <?php
                             endif;
                             ?>
-
                             <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                <label for="periodID">Hourly</label>
-                                <input type="text" class="max-w-full" name="hourly" readonly value="<?php echo $formatter->formatCurrency($row['hours'] * $row['rate'], "USD"); ?>">
+                                <label for="periodID">Tips Rate</label>
+                                <input type="text" class="max-w-full" name="hourly" readonly value="<?php echo $formatter->formatCurrency($result3['tipsrate'], "USD"); ?>">
                             </div>
-
-                            <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                <label for="periodID">Est. Tax Rate</label>
-                                <input type="number" step="0.000001" id="esttaxrate" class="max-w-full" name="taxes" value="<?php echo round($estTaxRate, 6); ?>">
-                            </div>
-                            <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                <label for="periodID">Est. Real Rate</label>
-                                <input type="text" class="max-w-full" name="taxes" value="<?php echo $formatter->formatCurrency($estRealRate, "USD"); ?>">
-                            </div>
-                            <div class="p-2 bg-green-200 rounded border border-black border-solid">
-                                <label for="periodID">Net</label>
-                                <input type="text" class="max-w-full" name="net" readonly value="<?php echo $formatter->formatCurrency($row['hours'] * $estRealRate, "USD"); ?>">
+                            <div class="col-span-3">
+                                <div class="grid grid-cols-4 gap-4">
+                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                        <label for="periodID">Hourly</label>
+                                        <input type="text" class="max-w-full" name="hourly" readonly value="<?php echo $formatter->formatCurrency($row['hours'] * $row['rate'], "USD"); ?>">
+                                    </div>
+                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                        <label for="periodID">Est. Tax Rate</label>
+                                        <input type="number" step="0.000001" id="esttaxrate" class="max-w-full" name="taxes" value="<?php echo round($estTaxRate, 6); ?>">
+                                    </div>
+                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                        <label for="periodID">Est. Real Rate</label>
+                                        <input type="text" class="max-w-full" name="taxes" value="<?php echo $formatter->formatCurrency($estRealRate, "USD"); ?>">
+                                    </div>
+                                    <div class="p-2 bg-green-200 rounded border border-black border-solid">
+                                        <label for="periodID">Net</label>
+                                        <input type="text" class="max-w-full" name="net" readonly value="<?php echo $formatter->formatCurrency($row['hours'] * $estRealRate, "USD"); ?>">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-span-3">
                                 <div class="grid grid-cols-4 gap-4">
-                                    <form action="<?= $_SEVER['PHP_SELF'] ?>">
+                                    <form action="<?= $_SERVER['PHP_SELF'] ?>">
                                         <div class="p-2 bg-green-200 rounded border border-black border-solid">
                                             <label for="periodID">OT Hours</label>
                                             <input name="othours" type="number" id="othours" class="max-w-full" name="net" step="0.01" value="0">
