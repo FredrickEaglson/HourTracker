@@ -44,8 +44,10 @@ $sql5 = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=? ORDER BY `date
 $sql5->bind_param("s", $_SESSION['userid']);
 $sql5->execute();
 
-
-
+$sql6 = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=? ORDER BY `date` DESC");
+$sql6->bind_param("s", $_SESSION['userid']);
+$sql6->execute();
+$restotalpp = $sql6->get_result();
 
 
 
@@ -91,7 +93,7 @@ $sql5->execute();
                         <button id="newpp" class="w-auto inline-block"><i class="fa-solid fa-square-plus"></i> New Pay Period</button>
                     </div>
                     <div class="flex flex-col justify-center items-center">
-                        <?= $result->num_rows ?> Pay Periods
+                        <?= $restotalpp->num_rows ?> Pay Periods
                     </div>
                 </div>
                 <ul>

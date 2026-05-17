@@ -12,8 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $ppid = $_POST['periodID'] ?? '';
 
     include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
-    $sql = $con->prepare("INSERT INTO `shifts` (`date`, `rate`, `userid`, `minutes`, `ppid`) VALUES (?, ?, ?, ?, ?)");
-    $sql->bind_param("sssss", $date, $rate, $userid, $minutes, $ppid);
+    $sql = $con->prepare("INSERT INTO `shifts` (`date`, `rate`, `userid`, `minutes`, `ppid`,`worked`) VALUES (?, ?, ?, ?, ?,?)");
+    $worked =$_POST['worked']??0;
+    
+    $sql->bind_param("sssssi", $date, $rate, $userid, $minutes, $ppid,$worked);
     $sql->execute();
     header("Location: ../");
 
@@ -84,8 +86,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <input type="number" class="max-w-full border border-black border-solid pl-1" name="minutes" required value="0">
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
-                                <label for="userid">Worked?</label>
-                                <input type="checkbox" class="max-w-full border border-black border-solid pl-1" name="worked" checkeds>
+                                <label for="periodID">Worked</label><br>
+                                <select name="workedcb">
+                                    <option value="1" >worked</option>
+                                    <option value="0" selected>scheduled</option>
+
+                                </select>
                             </div>
                             <div class="p-2 bg-slate-200 rounded border border-black border-solid">
                                 <label for="periodID">Shift ID</label>

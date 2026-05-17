@@ -3,6 +3,7 @@ session_start();
 
 include $_SERVER['DOCUMENT_ROOT']."/app/webanalytics.php";
 include $_SERVER['DOCUMENT_ROOT']."/app/constants.php";
+include $_SERVER['DOCUMENT_ROOT']."/auth/dbcon.php";
 
 if (isset($_SESSION['userid']) && $_SESSION['loggedin'] == true) {
     header("Location: /dashboard/index.php");
@@ -12,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     session_destroy();
 
     $email = $_POST['username'];
-    include 'auth/dbcon.php';
+    
     $sql = $con->prepare("SELECT * FROM `accounts` WHERE `email`=?");
     $sql->bind_param("s", $email);
     $sql->execute();
@@ -22,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else if ($result->num_rows ==1) {
         $row = $result->fetch_assoc();
         if (password_verify($_POST['password'], $row['passwordHash'])) {
+            
             session_start();
             $_SESSION['userid'] = $row['userid'];
             $_SESSION['email']=$row['email'];
@@ -32,10 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['expire']=time()+60*60*24*3;
             $_SESSION['csvname']=$row['csvname'];
             $_SESSION['role']=$row['account_type'];
-            $_SESSION['priv']= in_array($_SESSION['role'],PRIVLEDGED_ROLES);
+            $_SESSION['priv'] = in_array($_SESSION['role'],PRIVLEDGED_ROLES);
+            
 
 
-            header("Location: dashboard");
+            header("Location: ./dashboard");
         }
     }
 }
