@@ -43,11 +43,7 @@ $totalhours = $results4['totalHours'];
 $sql5 = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=? ORDER BY `date` DESC");
 $sql5->bind_param("s", $_SESSION['userid']);
 $sql5->execute();
-
-$sql6 = $con->prepare("SELECT * FROM `paychecks` WHERE `userid`=? ORDER BY `date` DESC");
-$sql6->bind_param("s", $_SESSION['userid']);
-$sql6->execute();
-$restotalpp = $sql6->get_result();
+$restotalpp = $sql5->get_result();
 
 
 
