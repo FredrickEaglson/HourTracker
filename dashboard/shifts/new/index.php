@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
     $sql = $con->prepare("INSERT INTO `shifts` (`date`, `rate`, `userid`, `minutes`, `ppid`,`worked`) VALUES (?, ?, ?, ?, ?,?)");
-    $worked =$_POST['worked']??0;
+    $worked =$_POST['worked'];
     
     $sql->bind_param("sssssi", $date, $rate, $userid, $minutes, $ppid,$worked);
     $sql->execute();

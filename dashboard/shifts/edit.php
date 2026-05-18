@@ -1,5 +1,6 @@
 <?php
 include $_SERVER['DOCUMENT_ROOT'] . "/auth/session.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/auth/dbcon.php";
 $defaultrate = 0.0;
 $totaltime = 0;
 $totalbt = 0;
@@ -41,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $ppid = $_POST['payperiodID'];
     $userid = $_POST['userid'];
-    $worked;
+    $worked = $_POST['worked'];
     $date = $_POST['date'];
     $rate = $_POST['rate'];
 
