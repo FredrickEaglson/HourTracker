@@ -20,16 +20,16 @@ const DDCLASSB = "block px-4 py-2 text-sm text-blue-500 hover:bg-blue-100 rounde
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <div id="dropwdown2"   data-role="menu" class="hidden mt-2 bg-white border border-slate-200 rounded-lg shadow-xl shadow-slate-950/[0.025] p-1 z-10">
-                    <a href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/shifts" class="block px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-md">Shifts</a>
-                    <a href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/payperiods" class="block px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-md">Payperiods</a>
-                    <a href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/paychecks" class="block px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-md">Paychecks</a>
-                    <a href="<?php echo $_SERVER['SRVROOT']; ?>/dashboard/paychecks" class="block px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-md">Tasks</a>
+                    <a href="/dashboard/shifts" class="block px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-md">Shifts</a>
+                    <a href="/dashboard/payperiods" class="block px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-md">Payperiods</a>
+                    <a href="/dashboard/paychecks" class="block px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-md">Paychecks</a>
+                    <a href="/dashboard/paychecks" class="block px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-md">Tasks</a>
                     <div class="h-px bg-slate-200 my-1"></div>
-                    <a class="<?= DDCLASSA ?>" href="<?= $_SERVER['SRVROOT'] . "/logout.php" ?>"> Logout </a>
-                    <a class="<?= DDCLASS ?>" href="<?= $_SERVER['SRVROOT'] . "/settings" ?>"> Settings </a>
+                    <a class="<?= DDCLASSA ?>" href="/logout.php"> Logout </a>
+                    <a class="<?= DDCLASS ?>" href="/settings"> Settings </a>
                     <?php if ($_SESSION['role'] == "admin") : ?>
                         <div class="h-px bg-blue-200 my-1"></div>
-                        <a class="<?= DDCLASSB ?>" href="<?= $_SERVER['SRVROOT'] . "/admin" ?>"> Admin Portal </a>
+                        <a class="<?= DDCLASSB ?>" href="/admin"> Admin Portal </a>
 
                     <?php endif; ?>
 
